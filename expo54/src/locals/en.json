@@ -172,9 +172,10 @@
         "ru": "русский",
         "sv": "Svenska",
         "uk": "українська",
-        "zh-Hans": "中文",
+        "zh-Hans": "简体中文",
         "fa": "فارسی",
-        "_test": ")tset( hsilgnE-esreveR"
+        "_test": ")tset( hsilgnE-esreveR",
+        "zh-Hant": "繁體中文"
       }
     },
     "privacy": "Privacy Policy",
@@ -326,5 +327,13 @@
     "auth": "Please enter your passcode.",
     "update": "Please set a passcode.",
     "confirm": "Please re-enter your passcode to confirm."
+  },
+  "thought_share": {
+    "button": "Export this thought",
+    "intro": "This is one Cognitive Behavioral Therapy (CBT) thought record. Please help me review the automatic thought, cognitive distortions, challenge, and alternative thought:",
+    "created": "Created",
+    "updated": "Updated",
+    "empty": "(empty)",
+    "error": "Sharing is not available on this device."
   }
 }

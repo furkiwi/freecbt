@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import { Alert, ScrollView, Share } from "react-native";
 import Feedback from "../feedback";
 import i18n from "../i18n";
 import { BubbleThought } from "../imgs/Bubbles";
@@ -7,12 +7,48 @@ import * as Distortion from "../io-ts/distortion";
 import * as Thought from "../io-ts/thought";
 import theme from "../theme";
 import {
+  ActionButton,
   FormContainer,
   GhostButtonWithGuts,
   Paragraph,
+  Row,
   SubHeader,
 } from "../ui";
 import { Slides } from "./FormView";
+
+function thoughtToShareText(thought: Thought.Thought): string {
+  const empty = i18n.t("thought_share.empty");
+  const distortions = Array.from(thought.cognitiveDistortions)
+    .map((d) => `- ${d.emoji()} ${d.label()}`)
+    .sort()
+    .join("\n");
+  return [
+    i18n.t("thought_share.intro"),
+    "",
+    `${i18n.t("thought_share.created")}: ${thought.createdAt.toLocaleString()}`,
+    `${i18n.t("thought_share.updated")}: ${thought.updatedAt.toLocaleString()}`,
+    "",
+    `## ${i18n.t("auto_thought")}`,
+    thought.automaticThought || empty,
+    "",
+    `## ${i18n.t("cbt_form.cog_distortion")}`,
+    distortions || empty,
+    "",
+    `## ${i18n.t("challenge")}`,
+    thought.challenge || empty,
+    "",
+    `## ${i18n.t("alt_thought")}`,
+    thought.alternativeThought || empty,
+  ].join("\n");
+}
+
+async function shareThought(thought: Thought.Thought): Promise<void> {
+  try {
+    await Share.share({ message: thoughtToShareText(thought) });
+  } catch {
+    Alert.alert(i18n.t("thought_share.error"));
+  }
+}
 
 const cognitiveDistortionsToText = (
   cognitiveDistortions: Set<Distortion.Distortion>
@@ -148,6 +184,17 @@ export default ({
       </Row> */}
 
       <CBTView thought={thought} onEdit={onEdit} />
+      <Row style={{ marginBottom: 18 }}>
+        <ActionButton
+          title={i18n.t("thought_share.button")}
+          width={"100%"}
+          fillColor="#EDF0FC"
+          textColor={theme.darkBlue}
+          onPress={() => {
+            void shareThought(thought);
+          }}
+        />
+      </Row>
       <Feedback />
 
       {/*<Row style={{ marginBottom: 9 }}>

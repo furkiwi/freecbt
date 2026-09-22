@@ -23,8 +23,38 @@ const i18n = new I18n({
 });
 
 i18n.enableFallback = true;
-// i18n.locale = Localization.locale
-i18n.locale = Localization.getLocales()[0].languageTag;
+
+function pickDeviceLocale(): string {
+  const available = new Set(Object.keys(locals));
+  for (const loc of Localization.getLocales()) {
+    const tag = loc.languageTag;
+    if (available.has(tag)) return tag;
+    const lower = tag.toLowerCase();
+    if (
+      lower.startsWith("zh-hant") ||
+      lower.startsWith("zh-tw") ||
+      lower.startsWith("zh-hk") ||
+      lower.startsWith("zh-mo")
+    ) {
+      if (available.has("zh-Hant")) return "zh-Hant";
+    }
+    if (
+      lower.startsWith("zh-hans") ||
+      lower.startsWith("zh-cn") ||
+      lower.startsWith("zh-sg")
+    ) {
+      if (available.has("zh-Hans")) return "zh-Hans";
+    }
+    const parts = tag.split("-");
+    if (parts.length >= 2 && available.has(`${parts[0]}-${parts[1]}`)) {
+      return `${parts[0]}-${parts[1]}`;
+    }
+    if (available.has(parts[0])) return parts[0];
+  }
+  return Localization.getLocales()[0]?.languageTag ?? "en";
+}
+
+i18n.locale = pickDeviceLocale();
 
 async function loadLocaleSetting() {
   // const locale = isPlatformSupported() ? await getSetting(LOCALE_KEY) : null;

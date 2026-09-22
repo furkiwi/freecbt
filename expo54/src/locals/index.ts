@@ -19,6 +19,7 @@ import ru from "./ru.json";
 import sv from "./sv.json";
 import uk from "./uk.json";
 import zhHans from "./zh-Hans.json";
+import zhHant from "./zh-Hant.json";
 
 export default {
   bg,
@@ -41,4 +42,5 @@ export default {
   sv,
   uk,
   "zh-Hans": zhHans,
+  "zh-Hant": zhHant,
 };
