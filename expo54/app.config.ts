@@ -2,7 +2,7 @@ import { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "FreeCBT",
-  slug: "freecbt",
+  slug: "freecbt-personal",
   version: "2.5.0-rc.2",
   owner: "furkiwi",
   githubUrl: "https://github.com/furkiwi/freecbt",
