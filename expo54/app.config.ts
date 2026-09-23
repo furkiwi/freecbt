@@ -24,6 +24,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       // `app.config.ts is missing ios.infoPlist.ITSAppUsesNonExemptEncryption boolean. Manual configuration is required in App Store Connect before the app can be tested.`
       usesNonExemptEncryption: false,
     },
+    infoPlist: {
+      NSFaceIDUsageDescription:
+        "Unlock FreeCBT with Face ID so you can return to a thought without typing your PIN.",
+    },
   },
   android: {
     package: "org.erosson.freecbt",
@@ -42,13 +46,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   web: {
     output: "static",
-    // favicon: "./assets/images/favicon.png",
     favicon: "./assets/ios.png",
   },
   notification: {
     icon: "./assets/quirk-bw.png",
   },
-  // OTA update details:
   updates: {
     fallbackToCacheTimeout: 0,
     url: "https://u.expo.dev/7fbb9321-8d12-487a-a336-d12462e5f549",
@@ -59,8 +61,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   runtimeVersion: {
-    // Property indicating compatibility between a build's native code and an OTA update.
-    // https://docs.expo.dev/eas-update/runtime-versions/
     policy: "sdkVersion",
   },
   plugins: [
@@ -79,11 +79,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     "expo-web-browser",
+    "expo-secure-store",
+    [
+      "expo-local-authentication",
+      {
+        faceIDPermission:
+          "Unlock FreeCBT with Face ID so you can return to a thought without typing your PIN.",
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
-    // https://freecbt.erosson.org/webapp/
     baseUrl: "/webapp",
   },
 });
