@@ -27,26 +27,37 @@ function AuthReady(props: ModelLoadedProps & { children: React.ReactNode }) {
   }
   // remove auth if the app is in the background, because it's easy to not close it all the way
   useEffect(() => {
-    AppState.addEventListener("change", (st) => {
+    const sub = AppState.addEventListener("change", (st) => {
       if (st !== "active") {
         dispatch(Action.setSessionAuthed(false));
       }
     });
-  });
-  // console.log("pincode", model.settings.pincode, model.sessionAuthed);
-  if (model.settings.pincode === null || model.sessionAuthed) {
-    return props.children;
-  } else {
-    return (
-      <LockForm
-        style={s}
-        header={t("lock_screen.auth")}
-        value={value}
-        setValue={setValue}
-        onSubmit={onSubmit}
-      />
-    );
-  }
+    return () => sub.remove();
+  }, [dispatch]);
+
+  const needsLock = model.settings.pincode !== null && !model.sessionAuthed;
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: needsLock ? 0 : 1, display: needsLock ? "none" : "flex" }}
+        pointerEvents={needsLock ? "none" : "auto"}
+        accessibilityElementsHidden={needsLock}
+        importantForAccessibility={needsLock ? "no-hide-descendants" : "auto"}
+      >
+        {props.children}
+      </View>
+      {needsLock ? (
+        <LockForm
+          style={s}
+          header={t("lock_screen.auth")}
+          value={value}
+          setValue={setValue}
+          onSubmit={onSubmit}
+        />
+      ) : null}
+    </View>
+  );
 }
 
 export function LockForm(props: {
