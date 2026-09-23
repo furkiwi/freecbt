@@ -1,4 +1,8 @@
 import { LoadModel, ModelLoadedProps } from "@/src/hooks/use-model";
+import {
+  hasPincode,
+  isCorrectPincode,
+} from "@/src/legacy/lockstore";
 import { Action } from "@/src/model";
 import React, { useEffect, useState } from "react";
 import { AppState, Button, Text, TextInput, View } from "react-native";
@@ -16,12 +20,18 @@ export function AuthGateway(props: {
 function AuthReady(props: ModelLoadedProps & { children: React.ReactNode }) {
   const { model, dispatch, style: s, translate: t } = props;
   const [value, setValue] = useState<string>("");
+  const [pinRequired, setPinRequired] = useState(
+    model.settings.pincode !== null
+  );
 
-  function onSubmit() {
-    // reset text entry. this won't matter if auth succeeds
+  useEffect(() => {
+    hasPincode().then(setPinRequired);
+  }, [model.settings.pincode]);
+
+  async function onSubmit() {
+    const code = value;
     setValue("");
-    if (value === model.settings.pincode) {
-      // successful auth
+    if (await isCorrectPincode(code)) {
       dispatch(Action.setSessionAuthed(true));
     }
   }
@@ -35,7 +45,7 @@ function AuthReady(props: ModelLoadedProps & { children: React.ReactNode }) {
     return () => sub.remove();
   }, [dispatch]);
 
-  const needsLock = model.settings.pincode !== null && !model.sessionAuthed;
+  const needsLock = pinRequired && !model.sessionAuthed;
 
   return (
     <View style={{ flex: 1 }}>
@@ -69,7 +79,6 @@ export function LockForm(props: {
 }) {
   const { value, setValue, onSubmit, header, style: s } = props;
   function onChangeText(newValue: string) {
-    // numbers only
     setValue(newValue.replace(/[^0-9]/g, ""));
   }
   return (
@@ -85,9 +94,7 @@ export function LockForm(props: {
           autoFocus={true}
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
-          // don't attempt to blur
           submitBehavior="submit"
-          // that wasn't good enough, keep focus
           onBlur={(e) => e.target.focus()}
         />
         <Button title="submit" onPress={onSubmit} />
