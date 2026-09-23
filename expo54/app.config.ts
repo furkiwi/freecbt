@@ -2,10 +2,10 @@ import { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "FreeCBT",
-  slug: "freecbt",
-  version: "2.5.0-rc.1",
-  owner: "erosson",
-  githubUrl: "https://github.com/erosson/freecbt",
+  slug: "freecbt-personal",
+  version: "2.5.0-rc.2",
+  owner: "furkiwi",
+  githubUrl: "https://github.com/furkiwi/freecbt",
   platforms: ["android", "ios", "web"],
   orientation: "portrait",
   icon: "./assets/ios.png",
@@ -14,7 +14,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   newArchEnabled: true,
   primaryColor: "#F8A5C2",
   ios: {
-    bundleIdentifier: "org.erosson.freecbt",
+    bundleIdentifier: "org.furkiwi.freecbt",
     supportsTablet: true,
     icon: "./assets/ios.png",
     // apple doesn't like my prerelease version tag ("2.5.0-rc.1"). remove this apple-specific override once we're done with prerelease versions.
@@ -24,9 +24,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       // `app.config.ts is missing ios.infoPlist.ITSAppUsesNonExemptEncryption boolean. Manual configuration is required in App Store Connect before the app can be tested.`
       usesNonExemptEncryption: false,
     },
+    infoPlist: {
+      NSFaceIDUsageDescription:
+        "Unlock FreeCBT with Face ID so you can return to a thought without typing your PIN.",
+    },
   },
   android: {
-    package: "org.erosson.freecbt",
+    package: "org.furkiwi.freecbt",
     permissions: [],
     blockedPermissions: [
       "android.permission.READ_EXTERNAL_STORAGE",
@@ -42,25 +46,21 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   web: {
     output: "static",
-    // favicon: "./assets/images/favicon.png",
     favicon: "./assets/ios.png",
   },
   notification: {
     icon: "./assets/quirk-bw.png",
   },
-  // OTA update details:
   updates: {
     fallbackToCacheTimeout: 0,
-    url: "https://u.expo.dev/7fbb9321-8d12-487a-a336-d12462e5f549",
+    url: "https://u.expo.dev/7845bb40-8f27-47c5-a347-ab468c88e6ab",
   },
   extra: {
     eas: {
-      projectId: "7fbb9321-8d12-487a-a336-d12462e5f549",
+      projectId: "7845bb40-8f27-47c5-a347-ab468c88e6ab",
     },
   },
   runtimeVersion: {
-    // Property indicating compatibility between a build's native code and an OTA update.
-    // https://docs.expo.dev/eas-update/runtime-versions/
     policy: "sdkVersion",
   },
   plugins: [
@@ -79,11 +79,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     "expo-web-browser",
+    "expo-secure-store",
+    [
+      "expo-local-authentication",
+      {
+        faceIDPermission:
+          "Unlock FreeCBT with Face ID so you can return to a thought without typing your PIN.",
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
-    // https://freecbt.erosson.org/webapp/
     baseUrl: "/webapp",
   },
 });

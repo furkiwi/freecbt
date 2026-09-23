@@ -1,4 +1,8 @@
 import { LoadModel, ModelLoadedProps } from "@/src/hooks/use-model";
+import {
+  hasPincode,
+  isCorrectPincode,
+} from "@/src/legacy/lockstore";
 import { Action } from "@/src/model";
 import React, { useEffect, useState } from "react";
 import { AppState, Button, Text, TextInput, View } from "react-native";
@@ -16,37 +20,54 @@ export function AuthGateway(props: {
 function AuthReady(props: ModelLoadedProps & { children: React.ReactNode }) {
   const { model, dispatch, style: s, translate: t } = props;
   const [value, setValue] = useState<string>("");
+  const [pinRequired, setPinRequired] = useState(
+    model.settings.pincode !== null
+  );
 
-  function onSubmit() {
-    // reset text entry. this won't matter if auth succeeds
+  useEffect(() => {
+    hasPincode().then(setPinRequired);
+  }, [model.settings.pincode]);
+
+  async function onSubmit() {
+    const code = value;
     setValue("");
-    if (value === model.settings.pincode) {
-      // successful auth
+    if (await isCorrectPincode(code)) {
       dispatch(Action.setSessionAuthed(true));
     }
   }
   // remove auth if the app is in the background, because it's easy to not close it all the way
   useEffect(() => {
-    AppState.addEventListener("change", (st) => {
+    const sub = AppState.addEventListener("change", (st) => {
       if (st !== "active") {
         dispatch(Action.setSessionAuthed(false));
       }
     });
-  });
-  // console.log("pincode", model.settings.pincode, model.sessionAuthed);
-  if (model.settings.pincode === null || model.sessionAuthed) {
-    return props.children;
-  } else {
-    return (
-      <LockForm
-        style={s}
-        header={t("lock_screen.auth")}
-        value={value}
-        setValue={setValue}
-        onSubmit={onSubmit}
-      />
-    );
-  }
+    return () => sub.remove();
+  }, [dispatch]);
+
+  const needsLock = pinRequired && !model.sessionAuthed;
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: needsLock ? 0 : 1, display: needsLock ? "none" : "flex" }}
+        pointerEvents={needsLock ? "none" : "auto"}
+        accessibilityElementsHidden={needsLock}
+        importantForAccessibility={needsLock ? "no-hide-descendants" : "auto"}
+      >
+        {props.children}
+      </View>
+      {needsLock ? (
+        <LockForm
+          style={s}
+          header={t("lock_screen.auth")}
+          value={value}
+          setValue={setValue}
+          onSubmit={onSubmit}
+        />
+      ) : null}
+    </View>
+  );
 }
 
 export function LockForm(props: {

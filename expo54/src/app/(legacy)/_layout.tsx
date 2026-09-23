@@ -1,11 +1,10 @@
-import { PromiseRender } from "@/src/hooks/use-promise-state";
-import * as Feature from "@/src/legacy/feature";
 import { hasPincode } from "@/src/legacy/lockstore";
 import LockScreen from "@/src/legacy/screen/LockScreen";
+import * as Feature from "@/src/legacy/feature";
 import * as Style from "@/src/legacy/style";
 import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { AppState, Text } from "react-native";
+import { AppState, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
@@ -23,41 +22,60 @@ export default function RootLayout() {
 }
 
 function AuthState(props: { children: React.ReactNode }): React.JSX.Element {
-  const [p, setHasPincode] = useState<Promise<boolean>>(hasPincode());
-  const [authed, setAuthed] = useState<boolean>(false);
-  // remove auth if the app is in the background, because it's easy to not close it all the way
+  const [hasPin, setHasPin] = useState<boolean | null>(null);
+  const [authed, setAuthed] = useState(false);
+
   useEffect(() => {
-    AppState.addEventListener("change", (st) => {
-      if (st !== "active") {
-        setAuthed(false);
-        // also, refresh has-pincode: we might have changed settings after the app was loaded
-        setHasPincode(hasPincode());
+    let cancelled = false;
+
+    hasPincode().then((value) => {
+      if (!cancelled) {
+        setHasPin(value);
       }
     });
-  });
-  return (
-    <PromiseRender
-      promise={p}
-      pending={() => <></>}
-      failure={(e) => <Text>error: {e.message}</Text>}
-      success={(p) => {
-        if (p) {
-          // a pincode is required. have we already entered it?
-          if (authed) {
-            return props.children;
-          } else {
-            return (
-              <LockScreen
-                isSettingCode={false}
-                onCorrectEntry={() => setAuthed(true)}
-              />
-            );
+
+    const sub = AppState.addEventListener("change", (st) => {
+      if (st !== "active") {
+        // Re-lock when leaving the app, but keep the navigator mounted so
+        // in-progress form state is not thrown away.
+        setAuthed(false);
+        hasPincode().then((value) => {
+          if (!cancelled) {
+            setHasPin(value);
           }
-        } else {
-          // no pincode is required
-          return props.children;
-        }
-      }}
-    />
+        });
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      sub.remove();
+    };
+  }, []);
+
+  // Avoid flashing private thoughts before we know whether a pin is set.
+  if (hasPin === null) {
+    return <View style={{ flex: 1 }} />;
+  }
+
+  const needsLock = hasPin && !authed;
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: needsLock ? 0 : 1, display: needsLock ? "none" : "flex" }}
+        pointerEvents={needsLock ? "none" : "auto"}
+        accessibilityElementsHidden={needsLock}
+        importantForAccessibility={needsLock ? "no-hide-descendants" : "auto"}
+      >
+        {props.children}
+      </View>
+      {needsLock ? (
+        <LockScreen
+          isSettingCode={false}
+          onCorrectEntry={() => setAuthed(true)}
+        />
+      ) : null}
+    </View>
   );
 }

@@ -6,9 +6,22 @@ import React from "react";
 import { StatusBar, View } from "react-native";
 import * as AsyncState from "../async-state";
 import haptic from "../haptic";
-import { isCorrectPincode, setPincode } from "../lockstore";
+import i18n from "../i18n";
+import {
+  authenticateWithBiometrics,
+  isBiometricsEnabled,
+  isCorrectPincode,
+  setPincode,
+} from "../lockstore";
 import theme from "../theme";
-import { Container, GhostButton, Header, IconButton, Row } from "../ui";
+import {
+  ActionButton,
+  Container,
+  GhostButton,
+  Header,
+  IconButton,
+  Row,
+} from "../ui";
 
 type Props = {
   isSettingCode: boolean;
@@ -63,18 +76,17 @@ const KeypadSideButton = ({
 );
 
 const Notifier = ({ isActive }: { isActive: boolean }) => (
-  <View />
-  // <BouncyBigOnActive
-  //   style={{
-  //     width: 32,
-  //     height: 32,
-  //     borderRadius: 32,
-  //     backgroundColor: theme.pink,
-  //     borderColor: theme.darkPink,
-  //     borderWidth: 2,
-  //   }}
-  //   pose={isActive ? "active" : "inactive"}
-  // />
+  <View
+    style={{
+      width: 16,
+      height: 16,
+      borderRadius: 16,
+      marginHorizontal: 10,
+      backgroundColor: isActive ? theme.pink : "transparent",
+      borderColor: theme.darkPink,
+      borderWidth: 2,
+    }}
+  />
 );
 
 const BUTTON_SIZE = 96;
@@ -84,8 +96,38 @@ export default function LockScreen(props: Props) {
   const { isSettingCode } = props;
   const onCorrectEntry =
     props.onCorrectEntry ?? (() => router.navigate(Routes.thoughtCreate()));
+  const onCorrectEntryRef = React.useRef(onCorrectEntry);
+  onCorrectEntryRef.current = onCorrectEntry;
+
   const [code, setCode] = React.useState<string>("");
+  const [pendingCode, setPendingCode] = React.useState<string>("");
+  const [isConfirming, setIsConfirming] = React.useState(false);
+  const [showBiometrics, setShowBiometrics] = React.useState(false);
   const isComplete = code.length >= 4;
+
+  React.useEffect(() => {
+    if (isSettingCode) {
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const enabled = await isBiometricsEnabled();
+      if (cancelled || !enabled) {
+        return;
+      }
+      setShowBiometrics(true);
+      const ok = await authenticateWithBiometrics(
+        i18n.t("lock_screen.biometrics_prompt")
+      );
+      if (!cancelled && ok) {
+        haptic.notification(Haptic.NotificationFeedbackType.Success);
+        onCorrectEntryRef.current();
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isSettingCode]);
 
   async function onEnterCode(key: string) {
     haptic.impact(Haptic.ImpactFeedbackStyle.Light);
@@ -99,13 +141,36 @@ export default function LockScreen(props: Props) {
     setCode(code.substring(0, code.length - 1));
   }
 
+  async function onBiometricsPress() {
+    const ok = await authenticateWithBiometrics(
+      i18n.t("lock_screen.biometrics_prompt")
+    );
+    if (ok) {
+      haptic.notification(Haptic.NotificationFeedbackType.Success);
+      onCorrectEntry();
+    }
+  }
+
   // run when a code is complete
   AsyncState.useAsyncEffect(async () => {
     if (!isComplete) {
       return;
     }
-    // settings: set a new code
+    // settings: set a new code, then confirm it
     if (isSettingCode) {
+      if (!isConfirming) {
+        setPendingCode(code);
+        setCode("");
+        setIsConfirming(true);
+        return;
+      }
+      if (code !== pendingCode) {
+        setCode("");
+        setPendingCode("");
+        setIsConfirming(false);
+        haptic.notification(Haptic.NotificationFeedbackType.Error);
+        return;
+      }
       await setPincode(code);
       haptic.notification(Haptic.NotificationFeedbackType.Success);
       router.navigate(Routes.thoughtCreate());
@@ -123,14 +188,13 @@ export default function LockScreen(props: Props) {
     }
   }, [isComplete]);
 
+  const header = isSettingCode
+    ? isConfirming
+      ? i18n.t("lock_screen.confirm")
+      : i18n.t("lock_screen.update")
+    : i18n.t("lock_screen.auth");
+
   return (
-    // <FadesIn
-    //   style={{
-    //     backgroundColor: theme.pink,
-    //     height: "100%",
-    //   }}
-    //   pose="visible"
-    // >
     <>
       <StatusBar barStyle="dark-content" />
       <Container
@@ -157,9 +221,7 @@ export default function LockScreen(props: Props) {
               textAlign: "center",
             }}
           >
-            {isSettingCode
-              ? "Please set a passcode"
-              : "Please enter your passcode."}
+            {header}
           </Header>
         </Row>
       </Container>
@@ -234,8 +296,18 @@ export default function LockScreen(props: Props) {
             onPress={onBackspace}
           />
         </Row>
+        {showBiometrics ? (
+          <Row style={{ marginTop: 24, justifyContent: "center" }}>
+            <ActionButton
+              title={i18n.t("lock_screen.biometrics_button")}
+              fillColor="#EDF0FC"
+              textColor={theme.darkBlue}
+              width="100%"
+              onPress={onBiometricsPress}
+            />
+          </Row>
+        ) : null}
       </Container>
     </>
-    // </FadesIn>
   );
 }

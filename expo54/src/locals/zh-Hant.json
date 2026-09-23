@@ -1,0 +1,374 @@
+{
+  "onboarding_screen": {
+    "readme": "請先閱讀這段說明。",
+    "header": "FreeCBT 使用指南",
+    "block1": {
+      "header": "FreeCBT 需要反覆練習",
+      "body": "確實要花力氣，但學會使用 FreeCBT，常常能讓你感覺好很多。"
+    },
+    "block2": {
+      "header": "在當下使用 FreeCBT。",
+      "body": "當你感到焦慮、生氣或低落時，就打開 FreeCBT。"
+    },
+    "auto_thought_ex": "我沒去喬治的派對，他一定討厭我。",
+    "challenge_ex": "喬治知道我不可能每次都到場。錯過一次派對，不能證明他討厭我。若他錯過我的活動，我也不會因此認定他討厭我。\n\n我至少該用對待別人的公平程度對待自己。",
+    "alt_thought_ex": "我確實沒去喬治的派對，他可能會失望。我可以之後說明。我沒有依據說他討厭我。",
+    "cog_distortion": {
+      "label": "讀心術",
+      "slug": "mind-reading"
+    },
+    "intro": {
+      "line1": "歡迎使用",
+      "emphasis1": "FreeCBT",
+      "line2": "，這是一款",
+      "emphasis2": "認知行為治療（CBT）",
+      "line3": "應用程式。"
+    },
+    "crash_course": {
+      "line1": "這只是 CBT 的",
+      "emphasis1": "快速入門",
+      "line2": "，",
+      "emphasis2": "不能取代",
+      "line3": "專業治療師。"
+    },
+    "mood_thoughts": {
+      "line1": "第一：",
+      "emphasis1": "想法、情緒、身體感覺和行為會互相影響。"
+    },
+    "thoughts_arent_thoughts": {
+      "line1": "第二：有些想法是",
+      "emphasis1": "自動出現的。"
+    },
+    "your_distorted": {
+      "line1": "第三：自動化想法常常是",
+      "emphasis1": "不完整或沒那麼有幫助。"
+    },
+    "cbt_overview": {
+      "line1": "CBT 的目標是辨認",
+      "emphasis1": "自動化想法",
+      "line2": "，並用合理的想法",
+      "emphasis2": "用證據檢視",
+      "line3": "，再寫一句更完整、自己也信得過的想法。"
+    },
+    "ready": {
+      "emphasis1": "準備好了嗎？",
+      "line1": "我們來走一遍步驟。"
+    },
+    "catch": {
+      "line1": "首先，當自動化想法出現時，",
+      "emphasis1": "先把它寫下來",
+      "line2": "。"
+    },
+    "bad_thought_note": {
+      "line1": "記下這個想法：",
+      "line2": "我沒去喬治的派對，他一定討厭我。"
+    },
+    "identify_distortions": {
+      "line1": "找出",
+      "emphasis1": "認知扭曲"
+    },
+    "bad_distortions": {
+      "line1": "我們真的知道喬治會討厭我們嗎？如果不知道，這就是",
+      "emphasis1": "🧠 讀心術",
+      "line2": "我沒去喬治的派對，他一定討厭我。"
+    },
+    "challenge_screen": {
+      "line1": "有哪些事實支持這個想法？又有哪些不完全符合？",
+      "emphasis1": "檢視它。"
+    },
+    "write_challenge": {
+      "line1": "我們可以這樣寫："
+    },
+    "alt_thought": {
+      "line1": "最後，寫下一句",
+      "emphasis1": "更完整的想法。"
+    },
+    "show_off": {
+      "line1": "之後可以再回來查看："
+    },
+    "got_it": {
+      "line1": "你已經可以開始了！",
+      "btn_title": "開始使用"
+    },
+    "reminders": {
+      "header": "結束前，若你需要，我們可以傳送提醒。",
+      "disabled": "你可以之後在設定頁管理提醒。",
+      "button": {
+        "yes": "好，請提醒我",
+        "no": "先不用提醒",
+        "continue": "繼續"
+      }
+    }
+  },
+  "auto_thought": "自動化想法",
+  "cog_distortion": "勾選符合的思考模式。",
+  "challenge": "檢視證據。",
+  "alt_thought": "寫下一句更完整的想法。",
+  "alt_thought_description": "重點不是反駁自己，也不是強迫自己想正向。把已知的困難事實，以及原想法漏掉的部分，寫成一句你自己也信得過的話。",
+  "cbt_list": {
+    "header": ".FreeCBT",
+    "today": "今天",
+    "empty": "還沒有任何紀錄！"
+  },
+  "settings": {
+    "header": "FreeCBT*",
+    "theme": {
+      "header": "*主題",
+      "light": "淺色",
+      "dark": "深色",
+      "default": "跟隨系統"
+    },
+    "reminders": {
+      "header": "*提醒",
+      "description": "若你願意，可以開啟通知提醒，幫助你養成挑戰想法的習慣。",
+      "button": {
+        "yes": "請提醒我",
+        "no": "不用提醒，謝謝"
+      }
+    },
+    "pincode": {
+      "header": "*密碼鎖定 🔒",
+      "description": "你可以用密碼鎖定 App。請注意：忘記密碼時，唯一解法是清除所有資料，所以千萬別忘了。",
+      "button": {
+        "update": "更改密碼",
+        "clear": "移除密碼",
+        "set": "設定密碼"
+      },
+      "biometrics": {
+        "enable": "開啟 Face ID／指紋解鎖",
+        "disable": "關閉 Face ID／指紋解鎖",
+        "unavailable": "這台裝置尚未設定 Face ID、Touch ID 或指紋。"
+      }
+    },
+    "history": {
+      "header": "*歷史紀錄顯示文字",
+      "description": "預設會用「替代想法」當作歷史頁的標題，幫助你把想法記住成「已經改過了」。",
+      "button": {
+        "alternative": "替代想法",
+        "automatic": "自動化想法"
+      }
+    },
+    "backup": {
+      "header": "*備份",
+      "button": "備份 FreeCBT 資料",
+      "export-button": "匯出 FreeCBT 資料"
+    },
+    "locale": {
+      "header": "*語言",
+      "default": "跟隨系統",
+      "contribute": "協助翻譯 FreeCBT",
+      "// list": "translator note: use each language's native translation here; don't translate this list in other file. initial list based on https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes",
+      "list": {
+        "bg": "български",
+        "de": "Deutsch",
+        "en": "English",
+        "es": "Español",
+        "fi": "Suomi",
+        "fr": "Français",
+        "hi": "हिंदी",
+        "it": "Italiano",
+        "ko": "한국어",
+        "nb": "Norsk Bokmål",
+        "nl": "Nederlands",
+        "pl": "język polski",
+        "pt-BR": "Português do Brasil",
+        "pt-PT": "Português",
+        "ro": "Română",
+        "ru": "русский",
+        "sv": "Svenska",
+        "uk": "українська",
+        "zh-Hans": "简体中文",
+        "zh-Hant": "繁體中文",
+        "fa": "فارسی",
+        "_test": ")tset( hsilgnE-esreveR"
+      }
+    },
+    "privacy": "隱私權政策",
+    "terms": "服務條款",
+    "record_mode": {
+      "header": "想法紀錄",
+      "description": "精簡模式適合當下快速記。完整模式會加上情境、情緒強度、正反證據，以及寫完後的情緒重評。",
+      "simple": "精簡（四步）",
+      "full": "完整紀錄"
+    }
+  },
+  "cbt_form": {
+    "header": "FreeCBT",
+    "edit": "編輯",
+    "new": "新增",
+    "save": "儲存",
+    "submit": "儲存並完成",
+    "// auto_thought_placeholder_UNUSED": "例：「飛機可能會墜毀」",
+    "auto_thought_placeholder": "例：「對方會覺得我無能。」",
+    "cog_distortion": "認知扭曲",
+    "challenged": "挑戰",
+    "changed_placeholder": "有哪些事實支持這個想法？有哪些事實不完全符合？",
+    "alt_thought_placeholder": "一句把困難事實和漏掉的資訊都寫進去的想法",
+    "show_details": "顯示詳細說明",
+    "situation": "情境",
+    "situation_description": "先寫看得到的事實：何時、何地、發生什麼。詮釋留給下一步。",
+    "situation_placeholder": "例：「週二下午三點，寄給主管的信打錯一個字。」",
+    "emotion": "情緒",
+    "emotion_description": "用一兩個詞說出感覺。「很糟」不是情緒；焦慮、難過、羞愧、生氣才是。",
+    "emotion_placeholder": "例：焦慮、難過、生氣、羞愧",
+    "emotion_intensity": "當時有多強烈？（0–100）",
+    "emotion_after": "現在有多強烈？（0–100）",
+    "belief": "你有多相信這個想法？（0–100）",
+    "belief_after": "現在你有多相信原來的想法？（0–100）",
+    "evidence_for": "支持這個想法的事實",
+    "evidence_for_placeholder": "一個公正的旁觀者會把哪些事算作支持？",
+    "evidence_against": "不完全符合的事實",
+    "evidence_against_placeholder": "有什麼被漏掉、還不確定，或指向其他解釋？",
+    "mode": {
+      "header": "想法紀錄",
+      "description": "精簡模式維持四個快速步驟。完整模式再補情境、情緒、正反證據與情緒重評，較接近治療室工作單，但仍可略過。",
+      "simple": "精簡（四步）",
+      "full": "完整紀錄",
+      "switch_to_full": "需要更完整的欄位？改用完整紀錄",
+      "switch_to_simple": "回到精簡四步"
+    }
+  },
+  "explanation_screen": {
+    "header": "FreeCBT.",
+    "intro": "介紹"
+  },
+  "finished_screen": {
+    "header": "FreeCBT"
+  },
+  "all_or_nothing_thinking": "全有或全無思考",
+  "all_or_nothing_thinking_explanation": "這種扭曲是指我們容不下中間地帶。如果覺得自己有一點小缺點，就代表自己整個人很糟、一無是處，通常就是全有或全無思考。",
+  "all_or_nothing_thinking_thought": "面試搞砸了，我一定沒人要聘。",
+  "catastrophizing": "災難化",
+  "catastrophizing_explanation": "把小問題放大成大災難，就是災難化。例如工作上犯了無關緊要的小錯，卻一直害怕被發現、想像最糟後果，多半就是災難化。",
+  "catastrophizing_thought": "那封信打錯一個字，我一定會被開除。",
+  "emotional_reasoning": "情緒推理",
+  "emotional_reasoning_explanation_1": "「我感覺如此，所以一定是真的。」如果只因為害怕，就把無害的事情當成危險，就是情緒推理。事情不會因為我們害怕就變危險；我們也不會只因為這樣覺得，就真的很糟。",
+  "emotional_reasoning_explanation_2": "這一項常常不容易察覺。要花一點力氣，才能分辨何時是情緒在主導邏輯。",
+  "emotional_reasoning_thought": "我覺得内疚，所以一定做了壞事。",
+  "fortune_telling": "算命／預測未來",
+  "fortune_telling_explanation": "這種扭曲是在預測未來。我們常高估自己預測的能力，先擔心某事會發生，再去找「證據」證明它一定會發生。",
+  "fortune_telling_thought": "我即將搭的這班飛機一定會墜毀。",
+  "labeling": "貼標籤",
+  "labeling_explanation": "把一個人的單一特質套到整個人身上，就是貼標籤。對方沒理你，不一定是「混蛋」，也許只是趕時間。這也適用於自己：犯一次錯，不代表你就是「失敗者」。",
+  "labeling_thought": "我考砸一次，所以我是壞學生。",
+  "magnification_of_the_negative": "放大負面",
+  "magnification_of_the_negative_explanation": "判斷一件事時只看壞的部分、忽略好的部分，就是放大負面。如果面試不順就不斷責罵自己，很可能把面試中學到的經驗都過濾掉了。",
+  "magnification_of_the_negative_thought": "這週我吃得很健康，可是我沒去跑步。",
+  "mind_reading": "讀心術",
+  "mind_reading_explanation": "讀心是把「我猜對方在想什麼」當成事實。你可以注意到線索，但在對方說出來之前，那仍是假設；最壞的猜測只是其中一種可能。",
+  "mind_reading_thought": "我覺得自己對喬治很失禮，他一定討厭我。",
+  "minimization_of_the_positive": "貶低正面",
+  "minimization_of_the_positive_explanation": "把發生在自己身上的好事說得很無關緊要，就是貶低正面。即使這天沒有百分之百照計畫走，那六成順利的部分也不該被忽略。",
+  "minimization_of_the_positive_thought": "很多人喜歡我的報告，但我開場結巴了，所以整場都很糟。",
+  "other_blaming": "責怪他人",
+  "other_blaming_explanation_1": "覺得不好的情況一定是某人的錯，就是責怪他人。考試沒考好就怪老師，能量用錯地方了。路上被插隊，按喇叭、比中指、生悶氣，對你有幫助嗎？結果是既被插隊又更生氣。",
+  "other_blaming_explanation_2": "這不表示每件壞事都該怪自己。你不必怪任何人。若能讓事情過去、不加上責難，就沒有人必須是錯的那一方。",
+  "other_blaming_thought": "那個討厭的人排隊排好久，害我要遲到了！",
+  "over_generalization": "過度概括",
+  "over_generalization_explanation": "只根據一個例子就下結論，就是過度概括。簡報一次沒做好，就認定自己「不會簡報」，就是過度概括。",
+  "over_generalization_thought": "今天沒人邀我跳舞，所以以後也不會有人邀我。",
+  "self_blaming": "責怪自己",
+  "self_blaming_explanation": "把不好的情況全部歸到自己頭上，就是責怪自己。不是每件壞事都該由你負責。塞車時一直罵自己「早該出門」，就是責怪自己。你會這樣對待別人嗎？",
+  "self_blaming_thought": "我兒子學業不及格，一定是我對不起他。",
+  "should_statements": "應該句",
+  "should_statements_explanation_1": "「應該」是對自己、別人、或世界的僵硬規則。例如「我絕不該犯錯」「對方應該早就知道我的感受」。這些規則通常比你對朋友的要求更苛。",
+  "should_statements_explanation_2": "察覺到「應該」，不代表背後的價值是錯的。它比較像要求太緊；改成「我比較希望……」通常比較做得到。",
+  "should_statements_thought": "我絕不該感到焦慮。",
+  "accessibility": {
+    "help_button": "說明",
+    "list_button": "想法列表",
+    "new_thought_button": "新增想法",
+    "settings_button": "設定",
+    "delete_thought_button": "刪除想法",
+    "close_button": "關閉"
+  },
+  "reminder_notification": {
+    "1": {
+      "title": "若有事情正在發生，把它記下來。",
+      "body": "別讓想法積著，盡早處理。"
+    },
+    "2": {
+      "title": "若你正感到難受，FreeCBT 可以幫忙。",
+      "body": "現在花一點時間，挑戰你的想法。"
+    },
+    "intro": {
+      "title": "若你正感到難受，FreeCBT 可以幫忙。",
+      "body": "你每天會收到一次像這樣的提醒。"
+    }
+  },
+  "all_or_nothing_thinking_one_liner": "例：「那完全是在浪費時間」",
+  "overgeneralization_one_liner": "例：「每個人都會讓我失望」",
+  "mind_reading_one_liner": "例：「他現在一定討厭我」",
+  "fortune_telling_one_liner": "例：「我在派對上一定會生病」",
+  "magnification_of_the_negative_one_liner": "只盯著出問題的部分",
+  "minimization_of_the_positive_one_liner": "忽略實際發生的好事",
+  "catastrophizing_one_liner": "只想著最糟的可能",
+  "emotional_reasoning_one_liner": "例：「我好害怕，所以一定會恐慌發作」",
+  "should_statements_one_liner": "例：「我早該表現得更好」",
+  "labeling_one_liner": "例：「他是個混蛋」",
+  "self_blaming_one_liner": "把所有責任都攬到自己身上",
+  "other_blaming_one_liner": "把所有責任都推給別人",
+  "backup_screen": {
+    "header": "FreeCBT<-",
+    "export": {
+      "description": "備份 FreeCBT 資料時，請「分享」到安全且私密的地方，例如寄信給自己。之後可在下方載入該檔案來還原。任何拿到這個檔案的人都能讀取你的練習內容，請務必小心傳送位置！",
+      "clipboard": {
+        "button": "將 FreeCBT 資料複製到剪貼簿",
+        "success": "已複製到剪貼簿！"
+      },
+      "file": {
+        "button": "將 FreeCBT 資料匯出成檔案",
+        "success": "已寫入檔案！"
+      },
+      "share": {
+        "button": "匯出並分享 FreeCBT 資料",
+        "unavailable": "錯誤：這台裝置無法使用分享功能"
+      }
+    },
+    "import": {
+      "description": "還原備份會清除現有的 FreeCBT 資料，並用備份內容取代，建議先再做一份備份。",
+      "clipboard": {
+        "button": "從剪貼簿匯入 FreeCBT 資料",
+        "failure": "匯入失敗。你確定貼上了完整的 FreeCBT 備份文字嗎？"
+      },
+      "file": {
+        "button": "匯入 FreeCBT 資料",
+        "failure": "匯入失敗。你確定這是 FreeCBT 的備份檔嗎？"
+      },
+      "noop": "匯入成功，但內容沒有變化！請把備份文字另外存起來，萬一 App 遺失資料時再貼回來。",
+      "success": "匯入成功！"
+    }
+  },
+  "export_screen": {
+    "header": "FreeCBT->",
+    "description": "用其他格式查看 FreeCBT 資料。這些檔案之後無法再匯入 FreeCBT。",
+    "markdown": {
+      "button": "匯出為 Markdown／純文字"
+    },
+    "csv": {
+      "button": "匯出為 CSV"
+    },
+    "json": {
+      "button": "匯出為 JSON"
+    }
+  },
+  "nav": {
+    "backup": "備份與還原",
+    "export": "分享與匯出"
+  },
+  "lock_screen": {
+    "auth": "請輸入密碼。",
+    "update": "請設定一組密碼。",
+    "confirm": "請再輸入一次密碼以確認。",
+    "biometrics_button": "用 Face ID／指紋解鎖",
+    "biometrics_prompt": "解鎖 FreeCBT"
+  },
+  "thought_share": {
+    "button": "匯出這則紀錄",
+    "intro": "以下是一則認知行為治療（CBT）思考紀錄，請協助我檢視情境、自動化想法、思考模式、證據與替代想法：",
+    "created": "建立時間",
+    "updated": "更新時間",
+    "empty": "（未填寫）",
+    "error": "這台裝置無法分享文字。"
+  }
+}

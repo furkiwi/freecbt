@@ -12,3 +12,11 @@ export const HISTORY_BUTTON_LABEL_DEFAULT: HistoryButtonLabelSetting =
 
 export const NOTIFICATIONS_KEY = "notifications"
 export const LOCALE_KEY = "locale"
+export {
+  getThoughtRecordMode,
+  isThoughtRecordMode,
+  setThoughtRecordMode,
+  THOUGHT_RECORD_MODE_DEFAULT,
+  THOUGHT_RECORD_MODE_KEY,
+  ThoughtRecordMode,
+} from "./thought-record-mode"

@@ -3,6 +3,31 @@ import * as Thought from "./index"
 import * as E from "fp-ts/lib/Either"
 import { PathReporter } from "io-ts/lib/PathReporter"
 
+test("thought persist keeps optional full-record fields", () => {
+  const thought: Thought.Thought = Thought.create({
+    automaticThought: "auto",
+    alternativeThought: "alt",
+    challenge: "against",
+    cognitiveDistortions: ["all-or-nothing"],
+    situation: "at work",
+    emotion: "anxious",
+    emotionIntensity: 70,
+    automaticBelief: 80,
+    evidenceFor: "the email had a typo",
+    alternativeBelief: 40,
+    emotionIntensityAfter: 35,
+  })
+  const decoded = Thought.Codec.decode(Thought.Codec.encode(thought))
+  expect(E.isRight(decoded)).toBe(true)
+  if (E.isRight(decoded)) {
+    expect(decoded.right.situation).toBe("at work")
+    expect(decoded.right.emotion).toBe("anxious")
+    expect(decoded.right.emotionIntensity).toBe(70)
+    expect(decoded.right.evidenceFor).toBe("the email had a typo")
+    expect(decoded.right.emotionIntensityAfter).toBe(35)
+  }
+})
+
 test("thought from persist", () => {
   const thought: Thought.Thought = Thought.create({
     automaticThought: "auto",

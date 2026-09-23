@@ -5,6 +5,7 @@ export {
   getThoughtKey,
   Group,
   groupByDay,
+  hasFullRecordFields,
   ID,
   key,
   Thought,

@@ -11,8 +11,8 @@
       "body": "When you're feeling anxious, angry, or depressed, use FreeCBT."
     },
     "auto_thought_ex": "I missed George's party, he must hate me.",
-    "challenge_ex": "George knows I couldn't make it every time, I wouldn't hate him if he missed something of mine.\n\nI should treat myself at least as well as I treat others.",
-    "alt_thought_ex": "It's true I missed George's party, I can apologize, and he'll probably forgive me.",
+    "challenge_ex": "He knows I cannot make every event. Missing one party does not prove he hates me. If he missed something of mine, I would not assume he hates me.\n\nI can treat myself at least as fairly as I treat other people.",
+    "alt_thought_ex": "It is true I missed George's party, and he may be disappointed. I can apologize. I do not actually know that he hates me.",
     "cog_distortion": {
       "label": "Mind Reading",
       "slug": "mind-reading"
@@ -33,7 +33,7 @@
     },
     "mood_thoughts": {
       "line1": "First:",
-      "emphasis1": "your thoughts cause your moods."
+      "emphasis1": "thoughts, feelings, body, and behavior affect each other."
     },
     "thoughts_arent_thoughts": {
       "line1": "Second: your thoughts can be",
@@ -41,14 +41,14 @@
     },
     "your_distorted": {
       "line1": "Third: automatic thoughts are often",
-      "emphasis1": "distorted."
+      "emphasis1": "unhelpful or incomplete."
     },
     "cbt_overview": {
       "line1": "The goal of CBT is to recognize the",
-      "emphasis1": "distorted thoughts",
+      "emphasis1": "automatic thoughts",
       "line2": "and",
-      "emphasis2": "replace them",
-      "line3": "with rational ones."
+      "emphasis2": "weigh the evidence",
+      "line3": "and write a more complete thought you can believe."
     },
     "ready": {
       "emphasis1": "Ready?",
@@ -73,15 +73,15 @@
       "line2": "I missed George's party, he must hate me."
     },
     "challenge_screen": {
-      "line1": "Why isn't this thought realistic?",
-      "emphasis1": "Challenge it."
+      "line1": "What facts support this thought, and what facts do not fully fit?",
+      "emphasis1": "Examine it."
     },
     "write_challenge": {
       "line1": "We'll write something like this:"
     },
     "alt_thought": {
       "line1": "Finally, we'll write an",
-      "emphasis1": "alternative thought."
+      "emphasis1": "more complete thought."
     },
     "show_off": {
       "line1": "Find it later:"
@@ -100,11 +100,11 @@
       }
     }
   },
-  "auto_thought": "Automatic Thought",
-  "cog_distortion": "Select any distortions that apply.",
-  "challenge": "Challenge the thought.",
-  "alt_thought": "Write an alternative thought.",
-  "alt_thought_description": "This isn't a challenge, it's a way to cement an alternative thought.",
+  "auto_thought": "Automatic thought",
+  "cog_distortion": "Select any thinking patterns that fit.",
+  "challenge": "Look at the evidence.",
+  "alt_thought": "Write a more complete thought.",
+  "alt_thought_description": "This is not about proving yourself wrong or forcing a positive spin. Write a thought that includes the hard facts and anything the first thought left out — something you can actually believe.",
   "cbt_list": {
     "header": ".FreeCBT",
     "today": "Today",
@@ -133,6 +133,11 @@
         "update": "Update Pincode",
         "clear": "Clear Pincode",
         "set": "Set Pincode"
+      },
+      "biometrics": {
+        "enable": "Enable Face ID / fingerprint unlock",
+        "disable": "Disable Face ID / fingerprint unlock",
+        "unavailable": "This device has no Face ID, Touch ID, or fingerprint set up."
       }
     },
     "history": {
@@ -172,13 +177,20 @@
         "ru": "русский",
         "sv": "Svenska",
         "uk": "українська",
-        "zh-Hans": "中文",
+        "zh-Hans": "简体中文",
         "fa": "فارسی",
-        "_test": ")tset( hsilgnE-esreveR"
+        "_test": ")tset( hsilgnE-esreveR",
+        "zh-Hant": "繁體中文"
       }
     },
     "privacy": "Privacy Policy",
-    "terms": "Terms of Service"
+    "terms": "Terms of Service",
+    "record_mode": {
+      "header": "*thought record",
+      "description": "Simple mode is faster in the moment. Full mode adds situation, emotion ratings, evidence for and against, and a re-rating after the new thought.",
+      "simple": "Simple (4 steps)",
+      "full": "Full record"
+    }
   },
   "cbt_form": {
     "header": "FreeCBT",
@@ -187,12 +199,34 @@
     "save": "Save",
     "submit": "Save & Finish",
     "// auto_thought_placeholder_UNUSED": "ex: \"The plane might crash\"",
-    "auto_thought_placeholder": "ex: \"I should be more motivated\"",
+    "auto_thought_placeholder": "ex: \"They will think I am incompetent.\"",
     "cog_distortion": "Cognitive Distortion",
     "challenged": "Challenge",
-    "changed_placeholder": "It might not be true that...",
-    "alt_thought_placeholder": "What could we think instead?",
-    "show_details": "Show detailed descriptions"
+    "changed_placeholder": "What facts support this thought? What facts do not fully fit?",
+    "alt_thought_placeholder": "A thought that holds both the difficulty and what it left out",
+    "show_details": "Show detailed descriptions",
+    "situation": "Situation",
+    "situation_description": "Stick to observable facts: when, where, and what happened. Save interpretations for the next step.",
+    "situation_placeholder": "ex: \"Tuesday 3pm, sent an email to my manager with a typo.\"",
+    "emotion": "Emotion",
+    "emotion_description": "Name the feeling in one or two words. \"Bad\" is not an emotion; anxious, sad, ashamed, or angry is.",
+    "emotion_placeholder": "ex: anxious, sad, angry, ashamed",
+    "emotion_intensity": "How strong was it? (0–100)",
+    "emotion_after": "How strong is it now? (0–100)",
+    "belief": "How much do you believe this thought? (0–100)",
+    "belief_after": "How much do you believe the original thought now? (0–100)",
+    "evidence_for": "Facts that support the thought",
+    "evidence_for_placeholder": "What would a fair observer count as support?",
+    "evidence_against": "Facts that do not fully fit",
+    "evidence_against_placeholder": "What is missing, uncertain, or points another way?",
+    "mode": {
+      "header": "Thought record",
+      "description": "Simple mode keeps four quick steps. Full mode adds situation, emotion, evidence for and against, and a re-rating — closer to a clinic worksheet, still optional.",
+      "simple": "Simple (4 steps)",
+      "full": "Full record",
+      "switch_to_full": "Need more structure? Use the full record",
+      "switch_to_simple": "Back to the simple 4 steps"
+    }
   },
   "explanation_screen": {
     "header": "FreeCBT.",
@@ -206,7 +240,7 @@
   "all_or_nothing_thinking_thought": "I bombed the interview, I must be unhirable.",
   "catastrophizing": "Catastrophizing",
   "catastrophizing_explanation": "If we’re taking a small problem and blowing it way out of proportion, we’re catastrophizing. Did you make a small mistake at work and are dreading if someone found out even though it’s nothing serious? You’re probably catastrophizing.",
-  "catastrophizing_thought": "I'm feeling jittery, I might be having a heart attack.",
+  "catastrophizing_thought": "One typo in that email and I will be fired.",
   "emotional_reasoning": "Emotional Reasoning",
   "emotional_reasoning_explanation_1": "\"I feel it, therefore it must be true.\" If you find yourself justifying the \"danger\" of something innocuous because you’re afraid of it, then you’re likely engaging in emotional reasoning. Things aren’t dangerous because we’re afraid of them and we’re not awful just because we may think we are.",
   "emotional_reasoning_explanation_2": "This one is often hard to recognize. It takes some effort to recognize when your emotional mind is taking the logical reins.",
@@ -221,7 +255,7 @@
   "magnification_of_the_negative_explanation": "If you’re judging a situation based entirely on the negative parts and not considering the positive parts, you’re likely magnifying the negative. If you’re constantly berating yourself for bombing a job interview, you’re probably filtering out all the experience you gained from that interview.",
   "magnification_of_the_negative_thought": "I ate healthy this week, but I skipped my run.",
   "mind_reading": "Mind Reading",
-  "mind_reading_explanation": "If we're worried about what someone else is thinking about us, we're attempting to read minds. Unless someone tells you what they're thinking, you have absolutely no way of knowing. So why assume the worst?",
+  "mind_reading_explanation": "Mind reading is treating a guess about someone else's thoughts as a fact. You can notice cues, but until they tell you, it is still a hypothesis — and the worst-case guess is only one possibility.",
   "mind_reading_thought": "I think I was rude to George, I'll bet he hates me.",
   "minimization_of_the_positive": "Minimization of the Positive",
   "minimization_of_the_positive_explanation": "If we downplay the good things that are happening to us, we're minimizing the positive. Even if our day didn't go 100% as planned, it doesn't mean that the 60% that did go right should be ignored.",
@@ -236,10 +270,10 @@
   "self_blaming": "Self Blaming",
   "self_blaming_explanation": "If you're attributing a negative situation entirely to yourself, you're self-blaming. You don't have to be responsible for every bad thing that happens. If you're getting caught in traffic and you're berating yourself for not leaving earlier, you're self-blaming. Would you treat someone else this way?",
   "self_blaming_thought": "My son is failing in school, I must have failed him.",
-  "should_statements": "Should Statements",
-  "should_statements_explanation_1": "If you're assigning someone abilities they don't have, you're using faulty \"should\" statements. For example, if you have a fear of flying and are telling yourself \"I shouldn't be afraid of this, there's nothing wrong with the airplane!\" you're putting an undue burden on yourself. You have a fear of flying! It's normal for people who have a fear of flying to be afraid flying!",
-  "should_statements_explanation_2": "Should statements can seem nonsensical when you say it out loud; that's the point! They're illogical!",
-  "should_statements_thought": "I'm an adult, I shouldn't have these mental issues.",
+  "should_statements": "Should statements",
+  "should_statements_explanation_1": "Shoulds are rigid rules about how you, other people, or the world must be. \"I should never make mistakes.\" \"They should already know how I feel.\" The rule is usually stricter than you would apply to a friend.",
+  "should_statements_explanation_2": "Noticing a should does not mean the value behind it is wrong. It means the demand may be too tight, and a preference (\"I would rather…\") is often more workable.",
+  "should_statements_thought": "I should never feel anxious.",
   "accessibility": {
     "help_button": "help",
     "list_button": "list thoughts",
@@ -325,6 +359,16 @@
   "lock_screen": {
     "auth": "Please enter your passcode.",
     "update": "Please set a passcode.",
-    "confirm": "Please re-enter your passcode to confirm."
+    "confirm": "Please re-enter your passcode to confirm.",
+    "biometrics_button": "Unlock with Face ID / fingerprint",
+    "biometrics_prompt": "Unlock FreeCBT"
+  },
+  "thought_share": {
+    "button": "Export this thought",
+    "intro": "This is one Cognitive Behavioral Therapy (CBT) thought record. Please help me review the situation, automatic thought, thinking patterns, evidence, and alternative thought:",
+    "created": "Created",
+    "updated": "Updated",
+    "empty": "(empty)",
+    "error": "Sharing is not available on this device."
   }
 }

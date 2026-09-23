@@ -1,5 +1,6 @@
 import { Routes } from "@/src";
 import { LoadModel, ModelLoadedProps } from "@/src/hooks/use-model";
+import { setPincode } from "@/src/legacy/lockstore";
 import { Action } from "@/src/model";
 import { LockForm } from "@/src/view/auth-gateway";
 import { Redirect } from "expo-router";
@@ -37,9 +38,11 @@ function Ready({ model, dispatch, translate: t, style: s }: ModelLoadedProps) {
       }
       case "confirm": {
         if (form.code === form.confirm) {
-          // success: set pincode and redirect
-          dispatch(Action.setPincode(form.code));
-          setForm({ ...emptyForm(), status: "done" });
+          // success: set hashed pincode and redirect
+          setPincode(form.code).then(() => {
+            dispatch(Action.setPincode(form.code));
+            setForm({ ...emptyForm(), status: "done" });
+          });
         } else {
           // mismatch: reset and try again
           setForm(emptyForm());
