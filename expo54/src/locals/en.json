@@ -1,1 +1,6 @@
-PLACEHOLDER_EN
+{
+  "cbt_form": {
+    "emotion_intensity": "How strong was the emotion? (0–100)",
+    "emotion_after": "How strong is the emotion now? (0–100)"
+  }
+}
