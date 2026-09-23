@@ -6,6 +6,7 @@ import React from "react";
 import { StatusBar, View } from "react-native";
 import * as AsyncState from "../async-state";
 import haptic from "../haptic";
+import i18n from "../i18n";
 import { isCorrectPincode, setPincode } from "../lockstore";
 import theme from "../theme";
 import { Container, GhostButton, Header, IconButton, Row } from "../ui";
@@ -63,18 +64,17 @@ const KeypadSideButton = ({
 );
 
 const Notifier = ({ isActive }: { isActive: boolean }) => (
-  <View />
-  // <BouncyBigOnActive
-  //   style={{
-  //     width: 32,
-  //     height: 32,
-  //     borderRadius: 32,
-  //     backgroundColor: theme.pink,
-  //     borderColor: theme.darkPink,
-  //     borderWidth: 2,
-  //   }}
-  //   pose={isActive ? "active" : "inactive"}
-  // />
+  <View
+    style={{
+      width: 16,
+      height: 16,
+      borderRadius: 16,
+      marginHorizontal: 10,
+      backgroundColor: isActive ? theme.pink : "transparent",
+      borderColor: theme.darkPink,
+      borderWidth: 2,
+    }}
+  />
 );
 
 const BUTTON_SIZE = 96;
@@ -124,13 +124,6 @@ export default function LockScreen(props: Props) {
   }, [isComplete]);
 
   return (
-    // <FadesIn
-    //   style={{
-    //     backgroundColor: theme.pink,
-    //     height: "100%",
-    //   }}
-    //   pose="visible"
-    // >
     <>
       <StatusBar barStyle="dark-content" />
       <Container
@@ -158,8 +151,8 @@ export default function LockScreen(props: Props) {
             }}
           >
             {isSettingCode
-              ? "Please set a passcode"
-              : "Please enter your passcode."}
+              ? i18n.t("lock_screen.update")
+              : i18n.t("lock_screen.auth")}
           </Header>
         </Row>
       </Container>
@@ -236,6 +229,5 @@ export default function LockScreen(props: Props) {
         </Row>
       </Container>
     </>
-    // </FadesIn>
   );
 }
