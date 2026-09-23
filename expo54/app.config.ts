@@ -30,7 +30,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    package: "org.erosson.freecbt",
+    package: "org.furkiwi.freecbt",
     permissions: [],
     blockedPermissions: [
       "android.permission.READ_EXTERNAL_STORAGE",
