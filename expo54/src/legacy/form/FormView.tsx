@@ -17,6 +17,11 @@ import {
   textInputStyle,
 } from "./textInputStyle";
 
+const slideContentStyle = {
+  paddingHorizontal: 24,
+  paddingBottom: 32,
+};
+
 export const simpleSlides = [
   "automatic",
   "distortions",
@@ -71,7 +76,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
     switch (item.item) {
       case "situation":
         return (
-          <ScrollView>
+          <ScrollView contentContainerStyle={slideContentStyle}>
             <SubHeader style={{ marginBottom: 6 }}>
               {i18n.t("cbt_form.situation")}
             </SubHeader>
@@ -114,7 +119,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
         );
       case "automatic":
         return (
-          <ScrollView>
+          <ScrollView contentContainerStyle={slideContentStyle}>
             <AutomaticThought
               value={props.record.automatic}
               onChange={(automatic) => props.onChange({ automatic })}
@@ -134,14 +139,16 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
         );
       case "distortions":
         return (
-          <Distortions
-            selected={props.record.distortions}
-            onChange={props.onChangeDistortion}
-          />
+          <View style={slideContentStyle}>
+            <Distortions
+              selected={props.record.distortions}
+              onChange={props.onChangeDistortion}
+            />
+          </View>
         );
       case "challenge":
         return (
-          <ScrollView>
+          <ScrollView contentContainerStyle={slideContentStyle}>
             <Challenge
               value={props.record.challenge}
               onChange={(challenge) => props.onChange({ challenge })}
@@ -150,7 +157,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
         );
       case "evidence":
         return (
-          <ScrollView>
+          <ScrollView contentContainerStyle={slideContentStyle}>
             <SubHeader style={{ marginBottom: 6 }}>
               {i18n.t("cbt_form.evidence_for")}
             </SubHeader>
@@ -179,7 +186,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
         );
       case "alternative":
         return (
-          <ScrollView>
+          <ScrollView contentContainerStyle={slideContentStyle}>
             <AlternativeThought
               value={props.record.alternative}
               onChange={(alternative) => props.onChange({ alternative })}
