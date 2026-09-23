@@ -4,7 +4,14 @@ import * as Feature from "@/src/legacy/feature";
 import i18n from "@/src/legacy/i18n";
 import { langProgress } from "@/src/legacy/i18n-progress";
 import * as TS from "@/src/legacy/io-ts/thought/store";
-import { clearPincode, hasPincode } from "@/src/legacy/lockstore";
+import {
+  authenticateWithBiometrics,
+  clearPincode,
+  hasPincode,
+  isBiometricsAvailable,
+  isBiometricsEnabled,
+  setBiometricsEnabled,
+} from "@/src/legacy/lockstore";
 import {
   getThoughtRecordMode,
   HISTORY_BUTTON_LABEL_DEFAULT,
@@ -52,7 +59,6 @@ import {
 
 export { HistoryButtonLabelSetting };
 
-// Exportable settings
 export async function getHistoryButtonLabel(): Promise<HistoryButtonLabelSetting> {
   const value = await getSettingOrSetDefault(
     HISTORY_BUTTON_LABEL_KEY,
@@ -72,6 +78,7 @@ export async function getHistoryButtonLabel(): Promise<HistoryButtonLabelSetting
 export async function getLocaleSetting(): Promise<string | null> {
   return await getSetting(LOCALE_KEY);
 }
+
 export async function setLocaleSetting(
   locale: string | null
 ): Promise<boolean> {
@@ -79,11 +86,11 @@ export async function setLocaleSetting(
     i18n.locale = locale;
     return await setSetting(LOCALE_KEY, locale);
   } else {
-    // i18n.locale = Localization.locale
     i18n.locale = Localization.getLocales()[0].languageTag;
     return await removeSetting(LOCALE_KEY);
   }
 }
+
 export async function getNotifications(): Promise<boolean> {
   try {
     const str = await getSettingOrSetDefault(NOTIFICATIONS_KEY, "false");
@@ -98,7 +105,6 @@ export async function setNotifications(
   enabled: boolean
 ): Promise<boolean> {
   await Notifications.cancelAllScheduledNotificationsAsync();
-  // don't enable without permission
   enabled = enabled && (await registerForLocalNotificationsAsync());
   if (enabled) {
     await Notifications.scheduleNotificationAsync({
@@ -106,8 +112,6 @@ export async function setNotifications(
         title: i18n.t("reminder_notification.intro.title"),
         body: i18n.t("reminder_notification.intro.body"),
         color: "#F78FB3",
-        // icon: "https://freecbt.erosson.org/static/favicon/favicon.ico",
-        // icon: "https://freecbt.erosson.org/notifications/quirk-bw.png",
       },
       trigger: null,
     });
@@ -116,14 +120,10 @@ export async function setNotifications(
         title: i18n.t("reminder_notification.1.title"),
         body: i18n.t("reminder_notification.1.body"),
         color: "#F78FB3",
-        // icon: "https://freecbt.erosson.org/static/favicon/favicon.ico",
-        // icon: "https://freecbt.erosson.org/notifications/quirk-bw.png",
       },
       trigger: feature.remindersEachMinute
-        ? { channelId: "default", repeats: true, seconds: 60 } // ridiculously often, for debugging
-        : // TODO use dailynotificationtrigger/calendarnotificationtrigger
-          // https://docs.expo.dev/versions/latest/sdk/notifications/#notificationcontentinput
-          { channelId: "default", repeats: true, seconds: 86400 },
+        ? { channelId: "default", repeats: true, seconds: 60 }
+        : { channelId: "default", repeats: true, seconds: 86400 },
     });
   }
   setSetting(NOTIFICATIONS_KEY, JSON.stringify(enabled));
@@ -161,6 +161,14 @@ export default function SettingScreen(): React.JSX.Element {
   const areNotificationsOn =
     AsyncState.useAsyncState<boolean>(getNotifications);
   const hasPincode_ = AsyncState.useAsyncState<boolean>(hasPincode, [refresh]);
+  const biometricsAvailable = AsyncState.useAsyncState<boolean>(
+    isBiometricsAvailable,
+    [refresh]
+  );
+  const biometricsEnabled = AsyncState.useAsyncState<boolean>(
+    isBiometricsEnabled,
+    [refresh]
+  );
   const localeSetting = AsyncState.useAsyncState<string | null>(
     getLocaleSetting,
     [refresh]
@@ -194,6 +202,7 @@ export default function SettingScreen(): React.JSX.Element {
   >({
     status: "init",
   });
+
   async function onImport(value: string = ""): Promise<void> {
     const promise = TS.writeArchiveString(value ?? "");
     setArchiveWrite({
@@ -207,10 +216,10 @@ export default function SettingScreen(): React.JSX.Element {
         : { status: "failure", error: result }
     );
   }
+
   const { feature } = Feature.useFeatureContext();
 
   return (
-    // <FadesIn style={{ backgroundColor: theme.lightOffwhite }} pose="visible">
     <ScrollView
       style={{
         backgroundColor: theme.lightOffwhite,
@@ -219,11 +228,7 @@ export default function SettingScreen(): React.JSX.Element {
         height: "100%",
       }}
     >
-      <Container
-        style={{
-          paddingBottom: 128,
-        }}
-      >
+      <Container style={{ paddingBottom: 128 }}>
         <StatusBar barStyle="dark-content" />
         <Row style={{ marginBottom: 18 }}>
           <Header>{i18n.t("settings.header")}</Header>
@@ -251,11 +256,7 @@ export default function SettingScreen(): React.JSX.Element {
                 }}
               >
                 <SubHeader>{i18n.t("settings.reminders.header")}</SubHeader>
-                <Paragraph
-                  style={{
-                    marginBottom: 9,
-                  }}
-                >
+                <Paragraph style={{ marginBottom: 9 }}>
                   {i18n.t("settings.reminders.description")}
                 </Paragraph>
                 <RoundedSelectorButton
@@ -266,7 +267,6 @@ export default function SettingScreen(): React.JSX.Element {
                     setRefresh(refresh + 1);
                   }}
                 />
-
                 <RoundedSelectorButton
                   title={i18n.t("settings.reminders.button.no")}
                   selected={!notify}
@@ -278,6 +278,8 @@ export default function SettingScreen(): React.JSX.Element {
               </Row>
             )
           )}
+
+        {/* PIN Code & 生物辨識區塊 */}
         <Row
           style={{
             marginBottom: 18,
@@ -286,20 +288,14 @@ export default function SettingScreen(): React.JSX.Element {
           }}
         >
           <SubHeader>{i18n.t("settings.pincode.header")}</SubHeader>
-          <Paragraph
-            style={{
-              marginBottom: 9,
-            }}
-          >
+          <Paragraph style={{ marginBottom: 9 }}>
             {i18n.t("settings.pincode.description")}
           </Paragraph>
           {AsyncState.fold(
             hasPincode_,
             () => null,
             () => null,
-            (error) => (
-              <Text>{error}</Text>
-            ),
+            (error) => <Text>{error}</Text>,
             (show) =>
               show ? (
                 <>
@@ -324,6 +320,51 @@ export default function SettingScreen(): React.JSX.Element {
                       setRefresh(refresh + 1);
                     }}
                   />
+                  {AsyncState.fold(
+                    biometricsAvailable,
+                    () => null,
+                    () => null,
+                    () => null,
+                    (available) =>
+                      available
+                        ? AsyncState.fold(
+                            biometricsEnabled,
+                            () => null,
+                            () => null,
+                            () => null,
+                            (enabled) => (
+                              <ActionButton
+                                flex={1}
+                                title={
+                                  enabled
+                                    ? i18n.t(
+                                        "settings.pincode.biometrics.disable"
+                                      )
+                                    : i18n.t(
+                                        "settings.pincode.biometrics.enable"
+                                      )
+                                }
+                                width={"100%"}
+                                fillColor="#EDF0FC"
+                                textColor={theme.darkBlue}
+                                onPress={async () => {
+                                  if (!enabled) {
+                                    const ok =
+                                      await authenticateWithBiometrics(
+                                        i18n.t("lock_screen.biometrics_prompt")
+                                      );
+                                    if (!ok) {
+                                      return;
+                                    }
+                                  }
+                                  await setBiometricsEnabled(!enabled);
+                                  setRefresh(refresh + 1);
+                                }}
+                              />
+                            )
+                          )
+                        : null
+                  )}
                 </>
               ) : (
                 <ActionButton
@@ -340,6 +381,7 @@ export default function SettingScreen(): React.JSX.Element {
           )}
         </Row>
 
+        {/* 紀錄模式選單區塊 */}
         {AsyncState.fold(
           thoughtRecordMode,
           () => null,
@@ -376,13 +418,13 @@ export default function SettingScreen(): React.JSX.Element {
             </Row>
           )
         )}
+
+        {/* 歷史按鈕標籤區塊 */}
         {AsyncState.fold(
           historyButtonLabel,
           () => null,
           () => null,
-          (error) => (
-            <Text>{error}</Text>
-          ),
+          (error) => <Text>{error}</Text>,
           (label) => (
             <Row
               style={{
@@ -392,11 +434,7 @@ export default function SettingScreen(): React.JSX.Element {
               }}
             >
               <SubHeader>{i18n.t("settings.history.header")}</SubHeader>
-              <Paragraph
-                style={{
-                  marginBottom: 9,
-                }}
-              >
+              <Paragraph style={{ marginBottom: 9 }}>
                 {i18n.t("settings.history.description")}
               </Paragraph>
               <RoundedSelectorButton
@@ -412,6 +450,8 @@ export default function SettingScreen(): React.JSX.Element {
             </Row>
           )
         )}
+
+        {/* 備份與匯出 */}
         <SubHeader>{i18n.t("settings.backup.header")}</SubHeader>
         <Row style={{ marginBottom: 9 }}>
           <ActionButton
@@ -436,6 +476,7 @@ export default function SettingScreen(): React.JSX.Element {
           />
         </Row>
 
+        {/* 語系設定 */}
         {feature.localeSetting &&
           AsyncState.fold(
             localeSetting,
@@ -494,12 +535,9 @@ export default function SettingScreen(): React.JSX.Element {
             )
           )}
 
+        {/* 頁尾連結 */}
         {feature.localeSetting && (
-          <Row
-            style={{
-              marginBottom: 9,
-            }}
-          >
+          <Row style={{ marginBottom: 9 }}>
             <ActionButton
               flex={1}
               title={i18n.t("settings.locale.contribute")}
@@ -513,11 +551,7 @@ export default function SettingScreen(): React.JSX.Element {
             />
           </Row>
         )}
-        <Row
-          style={{
-            marginBottom: 9,
-          }}
-        >
+        <Row style={{ marginBottom: 9 }}>
           <ActionButton
             flex={1}
             title={i18n.t("settings.privacy")}
@@ -548,7 +582,6 @@ export default function SettingScreen(): React.JSX.Element {
         </Row>
       </Container>
     </ScrollView>
-    // </FadesIn>
   );
 }
 

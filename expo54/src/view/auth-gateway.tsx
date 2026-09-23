@@ -79,6 +79,7 @@ export function LockForm(props: {
 }) {
   const { value, setValue, onSubmit, header, style: s } = props;
   function onChangeText(newValue: string) {
+    // numbers only
     setValue(newValue.replace(/[^0-9]/g, ""));
   }
   return (
@@ -94,7 +95,9 @@ export function LockForm(props: {
           autoFocus={true}
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
+          // don't attempt to blur
           submitBehavior="submit"
+          // that wasn't good enough, keep focus
           onBlur={(e) => e.target.focus()}
         />
         <Button title="submit" onPress={onSubmit} />

@@ -133,6 +133,11 @@
         "update": "更改密碼",
         "clear": "移除密碼",
         "set": "設定密碼"
+      },
+      "biometrics": {
+        "enable": "開啟 Face ID／指紋解鎖",
+        "disable": "關閉 Face ID／指紋解鎖",
+        "unavailable": "這台裝置尚未設定 Face ID、Touch ID 或指紋。"
       }
     },
     "history": {
@@ -354,7 +359,9 @@
   "lock_screen": {
     "auth": "請輸入密碼。",
     "update": "請設定一組密碼。",
-    "confirm": "請再輸入一次密碼以確認。"
+    "confirm": "請再輸入一次密碼以確認。",
+    "biometrics_button": "用 Face ID／指紋解鎖",
+    "biometrics_prompt": "解鎖 FreeCBT"
   },
   "thought_share": {
     "button": "匯出這則紀錄",

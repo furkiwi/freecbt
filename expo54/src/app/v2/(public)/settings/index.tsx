@@ -4,6 +4,7 @@ import { LoadModel, ModelLoadedProps } from "@/src/hooks/use-model";
 import { PromiseRender } from "@/src/hooks/use-promise-state";
 import { useReminders } from "@/src/hooks/use-reminders";
 import { useStyle, useTheme } from "@/src/hooks/use-style";
+import { clearPincode } from "@/src/legacy/lockstore";
 import { Action, Model, Settings } from "@/src/model";
 import { Picker } from "@react-native-picker/picker";
 import Constants from "expo-constants";
@@ -159,7 +160,10 @@ function LockUpdateForm(props: {
           />
           <TouchableOpacity
             style={[s.btn]}
-            onPress={() => dispatch(Action.setPincode(null))}
+            onPress={async () => {
+              await clearPincode();
+              dispatch(Action.setPincode(null));
+            }}
           >
             <Text style={[s.buttonText]}>
               {t("settings.pincode.button.clear")}

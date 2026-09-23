@@ -133,6 +133,11 @@
         "update": "Update Pincode",
         "clear": "Clear Pincode",
         "set": "Set Pincode"
+      },
+      "biometrics": {
+        "enable": "Enable Face ID / fingerprint unlock",
+        "disable": "Disable Face ID / fingerprint unlock",
+        "unavailable": "This device has no Face ID, Touch ID, or fingerprint set up."
       }
     },
     "history": {
@@ -354,7 +359,9 @@
   "lock_screen": {
     "auth": "Please enter your passcode.",
     "update": "Please set a passcode.",
-    "confirm": "Please re-enter your passcode to confirm."
+    "confirm": "Please re-enter your passcode to confirm.",
+    "biometrics_button": "Unlock with Face ID / fingerprint",
+    "biometrics_prompt": "Unlock FreeCBT"
   },
   "thought_share": {
     "button": "Export this thought",
