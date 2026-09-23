@@ -219,26 +219,23 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
   }
 
   return (
-    <Carousel
-      key={props.mode}
-      data={[...slides]}
-      renderItem={_renderItem}
-      width={sliderWidth}
-      height={sliderHeight}
-      onSnapToItem={() => {
-        Keyboard.dismiss();
-      }}
-      loop={false}
-      defaultIndex={defaultIndex}
-      mode="parallax"
-      modeConfig={{
-        parallaxScrollingScale: 0.9,
-        parallaxScrollingOffset: Math.round(sliderWidth * 0.15),
-      }}
-      onConfigurePanGesture={(gesture) => {
-        "worklet";
-        gesture.activeOffsetX([-10, 10]);
-      }}
-    />
+    <View style={{ width: sliderWidth, overflow: "hidden" }}>
+      <Carousel
+        key={props.mode}
+        data={[...slides]}
+        renderItem={_renderItem}
+        width={sliderWidth}
+        height={sliderHeight}
+        onSnapToItem={() => {
+          Keyboard.dismiss();
+        }}
+        loop={false}
+        defaultIndex={defaultIndex}
+        onConfigurePanGesture={(gesture) => {
+          "worklet";
+          gesture.activeOffsetX([-10, 10]);
+        }}
+      />
+    </View>
   );
 }
