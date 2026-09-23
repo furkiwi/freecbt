@@ -6,12 +6,15 @@ import { langProgress } from "@/src/legacy/i18n-progress";
 import * as TS from "@/src/legacy/io-ts/thought/store";
 import { clearPincode, hasPincode } from "@/src/legacy/lockstore";
 import {
+  getThoughtRecordMode,
   HISTORY_BUTTON_LABEL_DEFAULT,
   HISTORY_BUTTON_LABEL_KEY,
   HistoryButtonLabelSetting,
   isHistoryButtonLabelSetting,
   LOCALE_KEY,
   NOTIFICATIONS_KEY,
+  setThoughtRecordMode,
+  ThoughtRecordMode,
 } from "@/src/legacy/setting";
 import {
   getSetting,
@@ -160,6 +163,10 @@ export default function SettingScreen(): React.JSX.Element {
   const hasPincode_ = AsyncState.useAsyncState<boolean>(hasPincode, [refresh]);
   const localeSetting = AsyncState.useAsyncState<string | null>(
     getLocaleSetting,
+    [refresh]
+  );
+  const thoughtRecordMode = AsyncState.useAsyncState<ThoughtRecordMode>(
+    getThoughtRecordMode,
     [refresh]
   );
 
@@ -333,6 +340,42 @@ export default function SettingScreen(): React.JSX.Element {
           )}
         </Row>
 
+        {AsyncState.fold(
+          thoughtRecordMode,
+          () => null,
+          () => null,
+          (error) => <Text>{error}</Text>,
+          (mode) => (
+            <Row
+              style={{
+                marginBottom: 18,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <SubHeader>{i18n.t("settings.record_mode.header")}</SubHeader>
+              <Paragraph style={{ marginBottom: 9 }}>
+                {i18n.t("settings.record_mode.description")}
+              </Paragraph>
+              <RoundedSelectorButton
+                title={i18n.t("settings.record_mode.simple")}
+                selected={mode === "simple"}
+                onPress={async () => {
+                  await setThoughtRecordMode("simple");
+                  setRefresh(refresh + 1);
+                }}
+              />
+              <RoundedSelectorButton
+                title={i18n.t("settings.record_mode.full")}
+                selected={mode === "full"}
+                onPress={async () => {
+                  await setThoughtRecordMode("full");
+                  setRefresh(refresh + 1);
+                }}
+              />
+            </Row>
+          )
+        )}
         {AsyncState.fold(
           historyButtonLabel,
           () => null,

@@ -3,16 +3,22 @@ import Constants from "expo-constants";
 import * as Haptic from "expo-haptics";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StatusBar } from "react-native";
+import { Pressable, StatusBar, Text } from "react-native";
 import * as AsyncState from "../async-state";
 import * as flagstore from "../flagstore";
-import FormView, { Slides } from "../form/FormView";
+import FormView, { FormRecord, Slides, slidesForMode } from "../form/FormView";
 import haptic from "../haptic";
 import i18n from "../i18n";
 import * as Distortion from "../io-ts/distortion";
 import * as Thought from "../io-ts/thought";
 import * as ThoughtStore from "../io-ts/thought/store";
 import { getIsExistingUser, setIsExistingUser } from "../io-ts/thought/store";
+import {
+  getThoughtRecordMode,
+  setThoughtRecordMode,
+  ThoughtRecordMode,
+} from "../setting/thought-record-mode";
+import theme from "../theme";
 import {
   clearDraft,
   distortionsFromSlugs,
@@ -28,6 +34,19 @@ interface Props {
   initSlide?: string;
 }
 
+const emptyRecord = (): Omit<FormRecord, "distortions"> => ({
+  situation: "",
+  emotion: "",
+  emotionIntensity: null,
+  automatic: "",
+  automaticBelief: null,
+  alternative: "",
+  alternativeBelief: null,
+  challenge: "",
+  evidenceFor: "",
+  emotionIntensityAfter: null,
+});
+
 export default function FormScreen(props: Props = {}): React.JSX.Element {
   const router = useRouter();
   const { thoughtID, initDistortions, initSlide } = props;
@@ -37,9 +56,8 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
     flagstore.get("start-help-badge", "true")
   );
 
-  const [automatic, setAutomatic] = React.useState("");
-  const [alternative, setAlternative] = React.useState("");
-  const [challenge, setChallenge] = React.useState("");
+  const [mode, setMode] = React.useState<ThoughtRecordMode>("simple");
+  const [fields, setFields] = React.useState(emptyRecord);
   const [distortions, setDistortions] = React.useState(
     new Set<Distortion.Distortion>([])
   );
@@ -47,7 +65,6 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
   const [slide, setSlide] = React.useState<Slides>(
     (initSlide as Slides) ?? "automatic"
   );
-  // TODO loading spinner
   const thought0 =
     AsyncState.useAsyncState<Thought.Thought | null>(async () => {
       if (thoughtID) {
@@ -56,40 +73,81 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
       return null;
     }, [thoughtID]);
 
-  // Restore saved thought + unsaved draft once. Draft wins so leaving the app
-  // mid-entry (including after the lock screen) does not lose typing.
   React.useEffect(() => {
     let cancelled = false;
     setDraftHydrated(false);
     (async () => {
+      const savedMode = await getThoughtRecordMode();
       if (thoughtID) {
         try {
           const thought = await ThoughtStore.read(thoughtID);
           if (cancelled) {
             return;
           }
-          setAutomatic(thought.automaticThought);
-          setAlternative(thought.alternativeThought);
-          setChallenge(thought.challenge);
+          setFields({
+            situation: thought.situation ?? "",
+            emotion: thought.emotion ?? "",
+            emotionIntensity: thought.emotionIntensity ?? null,
+            automatic: thought.automaticThought,
+            automaticBelief: thought.automaticBelief ?? null,
+            alternative: thought.alternativeThought,
+            alternativeBelief: thought.alternativeBelief ?? null,
+            challenge: thought.challenge,
+            evidenceFor: thought.evidenceFor ?? "",
+            emotionIntensityAfter: thought.emotionIntensityAfter ?? null,
+          });
           setDistortions(thought.cognitiveDistortions);
+          if (Thought.hasFullRecordFields(thought)) {
+            setMode("full");
+          } else {
+            setMode(savedMode);
+          }
         } catch (err) {
           console.error(err);
+          setMode(savedMode);
         }
-      } else if (initDistortions) {
-        setDistortions(
-          new Set(initDistortions.map((d) => Distortion.bySlug[d]))
-        );
+      } else {
+        setMode(savedMode);
+        if (initDistortions) {
+          setDistortions(
+            new Set(initDistortions.map((d) => Distortion.bySlug[d]))
+          );
+        }
       }
       const draft = await readDraft();
       if (cancelled) {
         return;
       }
       if (draft && (draft.thoughtID ?? null) === (thoughtID ?? null)) {
-        setAutomatic(draft.automaticThought);
-        setAlternative(draft.alternativeThought);
-        setChallenge(draft.challenge);
+        setFields({
+          situation: draft.situation,
+          emotion: draft.emotion,
+          emotionIntensity: draft.emotionIntensity,
+          automatic: draft.automaticThought,
+          automaticBelief: draft.automaticBelief,
+          alternative: draft.alternativeThought,
+          alternativeBelief: draft.alternativeBelief,
+          challenge: draft.challenge,
+          evidenceFor: draft.evidenceFor,
+          emotionIntensityAfter: draft.emotionIntensityAfter,
+        });
         setDistortions(distortionsFromSlugs(draft.distortionSlugs));
         setSlide(draft.slide);
+      }
+      if (
+        initSlide === "situation" ||
+        initSlide === "evidence" ||
+        draft?.slide === "situation" ||
+        draft?.slide === "evidence"
+      ) {
+        setMode("full");
+      }
+      if (
+        savedMode === "full" &&
+        (initSlide === "challenge" || draft?.slide === "challenge")
+      ) {
+        setMode("full");
+        setSlide("evidence");
       }
       setDraftHydrated(true);
     })();
@@ -111,25 +169,23 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
     const handle = setTimeout(() => {
       writeDraft({
         thoughtID: thoughtID ?? null,
-        automaticThought: automatic,
-        alternativeThought: alternative,
-        challenge,
+        automaticThought: fields.automatic,
+        alternativeThought: fields.alternative,
+        challenge: fields.challenge,
         distortionSlugs: Array.from(distortions).map((d) => d.slug),
         slide,
+        situation: fields.situation,
+        emotion: fields.emotion,
+        emotionIntensity: fields.emotionIntensity,
+        automaticBelief: fields.automaticBelief,
+        evidenceFor: fields.evidenceFor,
+        alternativeBelief: fields.alternativeBelief,
+        emotionIntensityAfter: fields.emotionIntensityAfter,
       });
     }, 250);
     return () => clearTimeout(handle);
-  }, [
-    draftHydrated,
-    thoughtID,
-    automatic,
-    alternative,
-    challenge,
-    distortions,
-    slide,
-  ]);
+  }, [draftHydrated, thoughtID, fields, distortions, slide]);
 
-  // redirect to onboarding if this is the first time opening the app
   AsyncState.useAsyncEffect(async () => {
     if (!(await getIsExistingUser())) {
       await setIsExistingUser();
@@ -139,10 +195,17 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
 
   async function onSave() {
     const args = {
-      automaticThought: automatic,
-      alternativeThought: alternative,
-      challenge: challenge,
+      automaticThought: fields.automatic,
+      alternativeThought: fields.alternative,
+      challenge: fields.challenge,
       cognitiveDistortions: distortions,
+      situation: fields.situation,
+      emotion: fields.emotion,
+      emotionIntensity: fields.emotionIntensity,
+      automaticBelief: fields.automaticBelief,
+      evidenceFor: fields.evidenceFor,
+      alternativeBelief: fields.alternativeBelief,
+      emotionIntensityAfter: fields.emotionIntensityAfter,
     };
     const thought0_: Thought.Thought | null = AsyncState.withDefault(
       thought0,
@@ -159,12 +222,25 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
   }
 
   function onChangeDistortion(selected: string) {
-    haptic.selection(); // iOS users get a selected buzz
+    haptic.selection();
     const d = Distortion.bySlug[selected];
     const ds = new Set(distortions);
-    // toggle
     ds.has(d) ? ds.delete(d) : ds.add(d);
     setDistortions(ds);
+  }
+
+  async function toggleMode() {
+    const next: ThoughtRecordMode = mode === "simple" ? "full" : "simple";
+    setMode(next);
+    await setThoughtRecordMode(next);
+    const allowed = slidesForMode(next);
+    if (next === "full" && slide === "challenge") {
+      setSlide("evidence");
+    } else if (next === "simple" && (slide === "situation" || slide === "evidence")) {
+      setSlide(slide === "evidence" ? "challenge" : "automatic");
+    } else if (!allowed.includes(slide)) {
+      setSlide(allowed[0]);
+    }
   }
 
   return (
@@ -182,7 +258,7 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
       >
         <Row
           style={{
-            marginBottom: 24,
+            marginBottom: 8,
             paddingLeft: 24,
             paddingRight: 24,
           }}
@@ -209,17 +285,23 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
             }}
           />
         </Row>
+        <Pressable
+          onPress={toggleMode}
+          style={{ paddingHorizontal: 24, marginBottom: 12 }}
+        >
+          <Text style={{ color: theme.blue, fontSize: 14 }}>
+            {mode === "simple"
+              ? i18n.t("cbt_form.mode.switch_to_full")
+              : i18n.t("cbt_form.mode.switch_to_simple")}
+          </Text>
+        </Pressable>
         <FormView
+          mode={mode}
           onSave={onSave}
-          automatic={automatic}
-          alternative={alternative}
-          challenge={challenge}
-          distortions={distortions}
+          record={{ ...fields, distortions }}
           slideToShow={slide}
           shouldShowInFlowOnboarding={fromIntro}
-          onChangeAlternativeThought={setAlternative}
-          onChangeAutomaticThought={setAutomatic}
-          onChangeChallenge={setChallenge}
+          onChange={(patch) => setFields((prev) => ({ ...prev, ...patch }))}
           onChangeDistortion={onChangeDistortion}
         />
       </Container>

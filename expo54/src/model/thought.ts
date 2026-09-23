@@ -16,6 +16,13 @@ export const Json = z.object({
   updatedAt: z.iso.datetime(),
   uuid: z.string(),
   v: z.string().optional(),
+  situation: z.string().optional(),
+  emotion: z.string().optional(),
+  emotionIntensity: z.number().min(0).max(100).nullable().optional(),
+  automaticBelief: z.number().min(0).max(100).nullable().optional(),
+  evidenceFor: z.string().optional(),
+  alternativeBelief: z.number().min(0).max(100).nullable().optional(),
+  emotionIntensityAfter: z.number().min(0).max(100).nullable().optional(),
 });
 export type Json = z.infer<typeof Json>;
 
@@ -53,6 +60,13 @@ export const Spec = z.object({
   cognitiveDistortions: z.set(Distortion.Distortion),
   challenge: z.string(),
   alternativeThought: z.string(),
+  situation: z.string().optional(),
+  emotion: z.string().optional(),
+  emotionIntensity: z.number().min(0).max(100).nullable().optional(),
+  automaticBelief: z.number().min(0).max(100).nullable().optional(),
+  evidenceFor: z.string().optional(),
+  alternativeBelief: z.number().min(0).max(100).nullable().optional(),
+  emotionIntensityAfter: z.number().min(0).max(100).nullable().optional(),
 });
 export type Spec = z.infer<typeof Spec>;
 
