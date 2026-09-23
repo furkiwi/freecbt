@@ -13,6 +13,12 @@ import * as Distortion from "../io-ts/distortion";
 import * as Thought from "../io-ts/thought";
 import * as ThoughtStore from "../io-ts/thought/store";
 import { getIsExistingUser, setIsExistingUser } from "../io-ts/thought/store";
+import {
+  clearDraft,
+  distortionsFromSlugs,
+  readDraft,
+  writeDraft,
+} from "../thought-draft";
 import { Container, Header, IconButton, Row } from "../ui";
 
 interface Props {
@@ -25,6 +31,7 @@ interface Props {
 export default function FormScreen(props: Props = {}): React.JSX.Element {
   const router = useRouter();
   const { thoughtID, initDistortions, initSlide } = props;
+  const initDistortionKey = (initDistortions ?? []).join(",");
   const fromIntro = props.fromIntro ?? false;
   const showHelpBadge = AsyncState.useAsyncState(() =>
     flagstore.get("start-help-badge", "true")
@@ -36,34 +43,91 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
   const [distortions, setDistortions] = React.useState(
     new Set<Distortion.Distortion>([])
   );
+  const [draftHydrated, setDraftHydrated] = React.useState(false);
+  const [slide, setSlide] = React.useState<Slides>(
+    (initSlide as Slides) ?? "automatic"
+  );
   // TODO loading spinner
   const thought0 =
     AsyncState.useAsyncState<Thought.Thought | null>(async () => {
       if (thoughtID) {
-        const thought = await ThoughtStore.read(thoughtID);
-        setAutomatic(thought.automaticThought);
-        setAlternative(thought.alternativeThought);
-        setChallenge(thought.challenge);
-        setDistortions(thought.cognitiveDistortions);
-        return thought;
+        return await ThoughtStore.read(thoughtID);
       }
       return null;
     }, [thoughtID]);
-  React.useEffect(() => {
-    if (initDistortions) {
-      setDistortions(new Set(initDistortions.map((d) => Distortion.bySlug[d])));
-    }
-  }, [initDistortions]);
 
-  // `slide` is set from props on init, props on update, or setSlide in this file
-  const [slide, setSlide] = React.useState<Slides>(
-    (initSlide as Slides) ?? "automatic"
-  );
+  // Restore saved thought + unsaved draft once. Draft wins so leaving the app
+  // mid-entry (including after the lock screen) does not lose typing.
+  React.useEffect(() => {
+    let cancelled = false;
+    setDraftHydrated(false);
+    (async () => {
+      if (thoughtID) {
+        try {
+          const thought = await ThoughtStore.read(thoughtID);
+          if (cancelled) {
+            return;
+          }
+          setAutomatic(thought.automaticThought);
+          setAlternative(thought.alternativeThought);
+          setChallenge(thought.challenge);
+          setDistortions(thought.cognitiveDistortions);
+        } catch (err) {
+          console.error(err);
+        }
+      } else if (initDistortions) {
+        setDistortions(
+          new Set(initDistortions.map((d) => Distortion.bySlug[d]))
+        );
+      }
+      const draft = await readDraft();
+      if (cancelled) {
+        return;
+      }
+      if (draft && (draft.thoughtID ?? null) === (thoughtID ?? null)) {
+        setAutomatic(draft.automaticThought);
+        setAlternative(draft.alternativeThought);
+        setChallenge(draft.challenge);
+        setDistortions(distortionsFromSlugs(draft.distortionSlugs));
+        setSlide(draft.slide);
+      }
+      setDraftHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [thoughtID, initDistortionKey]);
+
   React.useEffect(() => {
     if (initSlide) {
       setSlide(initSlide as Slides);
     }
   }, [initSlide]);
+
+  React.useEffect(() => {
+    if (!draftHydrated) {
+      return;
+    }
+    const handle = setTimeout(() => {
+      writeDraft({
+        thoughtID: thoughtID ?? null,
+        automaticThought: automatic,
+        alternativeThought: alternative,
+        challenge,
+        distortionSlugs: Array.from(distortions).map((d) => d.slug),
+        slide,
+      });
+    }, 250);
+    return () => clearTimeout(handle);
+  }, [
+    draftHydrated,
+    thoughtID,
+    automatic,
+    alternative,
+    challenge,
+    distortions,
+    slide,
+  ]);
 
   // redirect to onboarding if this is the first time opening the app
   AsyncState.useAsyncEffect(async () => {
@@ -88,6 +152,7 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
       ? { ...thought0_, ...args, updatedAt: new Date() }
       : Thought.create(args);
     await ThoughtStore.write(thought);
+    await clearDraft();
     haptic.notification(Haptic.NotificationFeedbackType.Success);
     router.navigate(Routes.thoughtView(Thought.key(thought)));
     setSlide("automatic");
@@ -103,13 +168,6 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
   }
 
   return (
-    //<FadesIn
-    //  style={{
-    //    backgroundColor: theme.lightOffwhite,
-    //    height: "100%",
-    //  }}
-    //  pose="visible"
-    //>
     <>
       <StatusBar barStyle="dark-content" />
       <Container
@@ -166,6 +224,5 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
         />
       </Container>
     </>
-    // </FadesIn>
   );
 }
