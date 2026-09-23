@@ -1,1 +1,6 @@
-see-file
+{
+  "onboarding_screen": {
+    "readme": "請先閱讀這段說明。",
+    "header": "FreeCBT 使用指南"
+  }
+}
