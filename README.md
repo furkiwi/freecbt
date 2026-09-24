@@ -1,83 +1,225 @@
 # freecbt
 
-一個以認知行為治療（CBT, Cognitive Behavioral Therapy）為核心的開源自助工具。
+一個以 **認知行為治療（CBT, Cognitive Behavioral Therapy）** 為核心的開源自助工具。
 
-本專案 fork 自 [`erosson/freecbt`](https://github.com/erosson/freecbt)，並在原始專案的基礎上進行功能調整與開發。
+FreeCBT 提供 Thought Record（思考紀錄）流程，讓使用者把事件、情緒、自動化想法與認知扭曲具體記錄下來，再進一步檢視證據、挑戰原本的想法，並整理出較平衡的替代想法。
 
-## ✨ 專案特色
+> **注意**
+>
+> FreeCBT 是自助工具，不是醫療或心理治療服務，不能取代心理師、精神科醫師或其他專業協助。
 
-除了保留原始 freecbt 的核心功能之外，本專案目前也包含以下修改：
+## ✨ 目前功能
 
-* 🔐 **App Lock**
+### 📝 Thought Record
 
-  * 支援應用程式鎖定功能
-  * 解鎖後可以繼續原本尚未完成的內容
+支援兩種 Thought Record 模式：
 
-* 📝 **表單狀態保存**
+- **Simple mode**：從 Automatic Thought 開始，快速完成核心思考紀錄。
+- **Full mode**：完整記錄從 Situation / Emotion 開始的流程，並包含情緒強度、信念強度與事後情緒強度等欄位。
 
-  * 在填寫 CBT Thought Record 的過程中，即使 App 被鎖定，也能保留目前正在編輯的內容
-  * 解鎖後可以繼續編輯，而不需要重新開始
+Full mode 的流程包含：
 
-* 💭 **Thought Draft**
+1. **Situation / Emotion** — 發生了什麼，以及當下的情緒與強度
+2. **Automatic Thought** — 當下浮現的自動化想法與信念強度
+3. **Cognitive Distortions** — 辨識可能存在的認知扭曲
+4. **Evidence** — 檢視支持與反對原本想法的證據
+5. **Alternative Thought** — 建立較平衡的替代想法，並重新評估信念與情緒
 
-  * 保存尚未完成的 Thought Record
-  * 避免因 App Lock 或其他操作造成輸入內容遺失
+### 🔄 Simple / Full 模式切換
 
-* 🌏 **繁體中文支援**
+切換模式時會盡量保留目前所在的等價步驟：
 
-  * 加入 Traditional Chinese（繁體中文）介面翻譯
-  * 持續改善中文介面的使用體驗
+- Simple → Full：Automatic Thought 會對應到 Full mode 的開頭 Situation / Emotion
+- Challenge ↔ Evidence 會自動對應
+- Full → Simple：Full mode 專有的 Situation、Evidence 會映射回 Simple mode 的對應步驟
 
-* 🧪 **測試**
+因此切換模式不需要重新開始整份紀錄。
 
-  * 為部分新增功能加入單元測試
-  * 包含 lock state、thought draft 等功能
+### 💾 Thought Draft
 
-## 📱 CBT Thought Record
+填寫中的 Thought Record 會持續保存為 draft。
 
-本專案主要提供 Thought Record（思考紀錄）工具，協助使用者記錄：
+即使尚未完成整份紀錄，也可以離開表單、進入 App Lock，再解鎖後繼續編輯，降低輸入內容遺失的風險。
 
-1. 發生了什麼事情
-2. 當下產生了哪些想法
-3. 當時的情緒與強度
-4. 對想法進行重新檢視
-5. 建立較平衡的替代想法
+### 🔐 App Lock
 
-這是一個自助工具，不能取代心理師、醫師或其他專業心理健康服務。
+提供 PIN App Lock：
 
-## 🛠️ 開發
+- 4 位數 PIN
+- PIN 以 salted hash 儲存，而不是直接保存明碼
+- 支援從舊版 plaintext PIN 進行一次性 migration
+- 在支援的平台上使用 SecureStore 保存 PIN hash
+- App Lock 啟用後可保護尚未完成的 Thought Record
 
-本專案使用 Expo / React Native 進行開發。
+### 👆 生物辨識解鎖
+
+支援裝置上的生物辨識功能，例如：
+
+- iOS Face ID / Touch ID
+- Android 支援的生物辨識方式
+
+當使用者啟用 biometric unlock 後，Lock Screen 會在 App 回到前景時嘗試啟動驗證；如果驗證失敗或不可用，仍可使用 PIN 解鎖。
+
+同時會避免在 App 位於背景時啟動 biometric prompt，並處理 App foreground / background 切換時的驗證取消與重新嘗試。
+
+### 🌏 繁體中文
+
+目前包含 Traditional Chinese（繁體中文）介面，並持續改善 CBT 表單、情緒強度與 App Lock 相關文字。
+
+### 🧪 測試
+
+目前包含 Jest 單元測試，涵蓋例如：
+
+- Simple / Full Thought Record 的起始步驟
+- Simple / Full 模式切換時的頁面映射
+- App Lock / draft 等相關功能
+
+---
+
+## 📱 支援平台
+
+專案使用 **Expo + React Native** 開發，目前設定的平台為：
+
+- Android
+- iOS
+- Web
+
+其中生物辨識與 SecureStore 等原生功能主要適用於 Android / iOS；Web 會使用對應的 fallback 行為。
+
+---
+
+## 🛠️ 開發環境
+
+### Requirements
+
+建議使用：
+
+- Node.js
+- npm
+- Expo SDK 54
+- React Native 0.81
+- TypeScript 5.9
 
 ### 安裝
 
-```bash
+Clone repository：
+
+~~~bash
 git clone https://github.com/furkiwi/freecbt.git
 cd freecbt
 npm install
-```
+~~~
 
-### 啟動開發環境
+### 啟動 Expo
 
-```bash
+進入 Expo app：
+
+~~~bash
+cd expo54
 npx expo start
-```
+~~~
 
-接著可以使用 Expo Go、Android Emulator 或 iOS Simulator 進行測試。
+接著可以選擇：
 
-## 📂 專案來源
+- Android Emulator
+- iOS Simulator
+- Expo Go（視功能與原生模組需求而定）
+- Web
 
-本專案的 Git 歷史來源：
+也可以直接使用 Expo 的平台指令：
 
-```text
+~~~bash
+npx expo start --android
+npx expo start --ios
+npx expo start --web
+~~~
+
+### 執行測試
+
+~~~bash
+cd expo54
+npm test
+~~~
+
+或：
+
+~~~bash
+npm run test:watch
+~~~
+
+### Lint
+
+~~~bash
+cd expo54
+npm run lint
+~~~
+
+---
+
+## 🧭 專案結構
+
+主要 App 位於 expo54/：
+
+~~~text
+freecbt/
+├── expo54/
+│   ├── app/                  # Expo Router routes
+│   ├── src/
+│   │   └── legacy/
+│   │       ├── form/         # Thought Record 表單
+│   │       ├── screen/       # App screens
+│   │       ├── lockstore.ts  # PIN / biometric 狀態
+│   │       └── ...
+│   ├── app.config.ts
+│   └── package.json
+├── www/
+├── package.json
+└── LICENSE
+~~~
+
+Thought Record 的主要流程集中在：
+
+~~~text
+expo54/src/legacy/form/
+├── FormView.tsx
+├── record-slides.ts
+├── IntensityPicker.tsx
+├── AutomaticThought.tsx
+├── AlternativeThought.tsx
+├── Challenge.tsx
+└── Distortions.tsx
+~~~
+
+其中 record-slides.ts 負責定義 Simple / Full mode 的步驟與模式切換時的頁面映射。
+
+---
+
+## 🔒 資料與隱私
+
+FreeCBT 的 App Lock 設計以「本機保存」為核心：
+
+- Thought Record draft 儲存在裝置端
+- PIN 不以明碼作為主要儲存格式
+- 可用的原生平台會使用 Expo SecureStore 保存 PIN hash
+- 生物辨識驗證由作業系統提供
+
+請注意：**App Lock 不等同於完整的資料加密方案。** 如果裝置本身遭到入侵、root / jailbreak，或其他具有高權限的程式取得裝置資料，不能保證資料絕對安全。
+
+---
+
+## 🌱 專案來源
+
+本專案是在既有 freecbt 專案基礎上持續開發的 fork：
+
+~~~text
 Flaque/quirk
-      ↓
+    ↓
 erosson/freecbt
-      ↓
+    ↓
 furkiwi/freecbt
-```
+~~~
 
-原始專案：
+Upstream：
 
 https://github.com/erosson/freecbt
 
@@ -85,23 +227,46 @@ https://github.com/erosson/freecbt
 
 https://github.com/furkiwi/freecbt
 
-## 🔀 本專案的修改
+---
 
-目前相較於 upstream，主要開發方向包含：
+## 🔀 開發方向
 
-* App Lock / Unlock 行為調整
-* Lock 狀態下保留表單內容
-* Thought Draft 儲存
-* CBT 表單狀態管理
-* Traditional Chinese（繁體中文）翻譯
-* Intensity Picker
-* Thought Record Mode
-* 相關測試與程式碼整理
+目前主要開發方向包括：
+
+- Thought Record 的 Simple / Full mode
+- 表單 draft 與狀態保存
+- App Lock / Unlock
+- PIN hash 與 SecureStore
+- Face ID / Touch ID / Android biometrics
+- 繁體中文翻譯
+- Emotion / Belief intensity picker
+- 表單 UX 與滑動流程
+- 單元測試與程式碼整理
+
+---
 
 ## 🤝 貢獻
 
-如果你發現 Bug、想改善翻譯，或有新的功能想法，歡迎建立 Issue 或 Pull Request。
+歡迎：
+
+- 回報 Bug
+- 提出功能建議
+- 改善繁體中文翻譯
+- 補充測試
+- 提交 Pull Request
+
+如果要修改 Thought Record 流程，建議同步檢查：
+
+1. record-slides.ts 的流程定義
+2. FormView.tsx 的 UI 與欄位
+3. FormScreen.tsx 的 draft / state 管理
+4. Simple / Full mode 切換行為
+5. 對應的 Jest tests
+
+---
 
 ## 📄 License
 
-本專案的授權方式請參考原始專案及 repository 中的 LICENSE 文件。
+本專案採用 **GNU General Public License v3.0（GPL-3.0）**。
+
+完整授權條款請參考 repository 中的 [LICENSE](./LICENSE)。
