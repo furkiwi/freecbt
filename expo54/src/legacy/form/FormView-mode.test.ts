@@ -1,7 +1,7 @@
 import {
   defaultSlideForMode,
   slideAfterModeChange,
-} from "./FormView";
+} from "./record-slides";
 
 test("full records start on situation/emotion, simple on automatic thought", () => {
   expect(defaultSlideForMode("full")).toBe("situation");
