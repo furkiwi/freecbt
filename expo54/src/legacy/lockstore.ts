@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Crypto from "expo-crypto";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as SecureStore from "expo-secure-store";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 
 /** Legacy plaintext PIN, still read for one-time migration. */
 const KEY_PINCODE_LEGACY = `@Quirk:pincode`;
@@ -242,22 +242,71 @@ export async function setBiometricsEnabled(enabled: boolean): Promise<void> {
   }
 }
 
+let biometricAuthInFlight: Promise<boolean> | null = null;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function cancelBiometricPrompt(): Promise<void> {
+  try {
+    await LocalAuthentication.cancelAuthenticate();
+  } catch {
+    // iOS and some Android versions do not implement cancel.
+  }
+}
+
 export async function authenticateWithBiometrics(
   promptMessage: string
 ): Promise<boolean> {
-  if (!(await isBiometricsAvailable())) {
+  if (Platform.OS === "web") {
     return false;
   }
-  try {
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage,
-      cancelLabel: "PIN",
-      disableDeviceFallback: true,
-      requireConfirmation: false,
-    });
-    return result.success;
-  } catch (err) {
-    console.error(err);
+  // Biometric prompts started while backgrounded fail or hang; the lock
+  // screen must wait until the app is active again.
+  if (AppState.currentState !== "active") {
     return false;
   }
+
+  if (biometricAuthInFlight) {
+    await cancelBiometricPrompt();
+    try {
+      await biometricAuthInFlight;
+    } catch {
+      // previous attempt settled
+    }
+  }
+
+  const run = (async () => {
+    try {
+      let available = await isBiometricsAvailable();
+      if (!available) {
+        await delay(300);
+        if (AppState.currentState !== "active") {
+          return false;
+        }
+        available = await isBiometricsAvailable();
+      }
+      if (!available) {
+        return false;
+      }
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage,
+        cancelLabel: "PIN",
+        disableDeviceFallback: true,
+        requireConfirmation: false,
+      });
+      return result.success;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  })();
+
+  biometricAuthInFlight = run.finally(() => {
+    if (biometricAuthInFlight === run) {
+      biometricAuthInFlight = null;
+    }
+  });
+  return biometricAuthInFlight;
 }

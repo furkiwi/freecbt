@@ -11,38 +11,26 @@ import AutomaticThought from "./AutomaticThought";
 import Challenge from "./Challenge";
 import Distortions from "./Distortions";
 import IntensityPicker from "./IntensityPicker";
+import { Slides, slidesForMode } from "./record-slides";
 import { sliderHeight, sliderWidth } from "./sizes";
 import {
   textInputPlaceholderColor,
   textInputStyle,
 } from "./textInputStyle";
 
+export {
+  defaultSlideForMode,
+  fullSlides,
+  simpleSlides,
+  slideAfterModeChange,
+  slidesForMode,
+} from "./record-slides";
+export type { Slides } from "./record-slides";
+
 const slideContentStyle = {
   paddingHorizontal: 24,
   paddingBottom: 32,
 };
-
-export const simpleSlides = [
-  "automatic",
-  "distortions",
-  "challenge",
-  "alternative",
-] as const;
-export const fullSlides = [
-  "situation",
-  "automatic",
-  "distortions",
-  "evidence",
-  "alternative",
-] as const;
-
-export type Slides =
-  | (typeof simpleSlides)[number]
-  | (typeof fullSlides)[number];
-
-export function slidesForMode(mode: ThoughtRecordMode): readonly Slides[] {
-  return mode === "full" ? fullSlides : simpleSlides;
-}
 
 export type FormRecord = {
   situation: string;
@@ -228,7 +216,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
   return (
     <View style={{ width: sliderWidth, overflow: "hidden" }}>
       <Carousel
-        key={props.mode}
+        key={`${props.mode}:${props.slideToShow}`}
         data={[...slides]}
         renderItem={_renderItem}
         width={sliderWidth}

@@ -6,7 +6,12 @@ import React from "react";
 import { Pressable, StatusBar, Text } from "react-native";
 import * as AsyncState from "../async-state";
 import * as flagstore from "../flagstore";
-import FormView, { FormRecord, Slides, slidesForMode } from "../form/FormView";
+import FormView, {
+  FormRecord,
+  Slides,
+  defaultSlideForMode,
+  slideAfterModeChange,
+} from "../form/FormView";
 import haptic from "../haptic";
 import i18n from "../i18n";
 import * as Distortion from "../io-ts/distortion";
@@ -108,6 +113,9 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
         }
       } else {
         setMode(savedMode);
+        if (savedMode === "full" && !initSlide) {
+          setSlide(defaultSlideForMode("full"));
+        }
         if (initDistortions) {
           setDistortions(
             new Set(initDistortions.map((d) => Distortion.bySlug[d]))
@@ -231,16 +239,10 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
 
   async function toggleMode() {
     const next: ThoughtRecordMode = mode === "simple" ? "full" : "simple";
+    const nextSlide = slideAfterModeChange(next, slide);
     setMode(next);
+    setSlide(nextSlide);
     await setThoughtRecordMode(next);
-    const allowed = slidesForMode(next);
-    if (next === "full" && slide === "challenge") {
-      setSlide("evidence");
-    } else if (next === "simple" && (slide === "situation" || slide === "evidence")) {
-      setSlide(slide === "evidence" ? "challenge" : "automatic");
-    } else if (!allowed.includes(slide)) {
-      setSlide(allowed[0]);
-    }
   }
 
   return (

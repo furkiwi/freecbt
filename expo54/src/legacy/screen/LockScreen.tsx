@@ -3,12 +3,13 @@ import Constants from "expo-constants";
 import * as Haptic from "expo-haptics";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StatusBar, View } from "react-native";
+import { AppState, StatusBar, View } from "react-native";
 import * as AsyncState from "../async-state";
 import haptic from "../haptic";
 import i18n from "../i18n";
 import {
   authenticateWithBiometrics,
+  cancelBiometricPrompt,
   isBiometricsEnabled,
   isCorrectPincode,
   setPincode,
@@ -103,6 +104,8 @@ export default function LockScreen(props: Props) {
   const [pendingCode, setPendingCode] = React.useState<string>("");
   const [isConfirming, setIsConfirming] = React.useState(false);
   const [showBiometrics, setShowBiometrics] = React.useState(false);
+  const [bioBusy, setBioBusy] = React.useState(false);
+  const bioBusyRef = React.useRef(false);
   const isComplete = code.length >= 4;
 
   React.useEffect(() => {
@@ -110,22 +113,50 @@ export default function LockScreen(props: Props) {
       return;
     }
     let cancelled = false;
-    (async () => {
+
+    async function tryUnlock() {
       const enabled = await isBiometricsEnabled();
       if (cancelled || !enabled) {
         return;
       }
       setShowBiometrics(true);
-      const ok = await authenticateWithBiometrics(
-        i18n.t("lock_screen.biometrics_prompt")
-      );
-      if (!cancelled && ok) {
-        haptic.notification(Haptic.NotificationFeedbackType.Success);
-        onCorrectEntryRef.current();
+      if (AppState.currentState !== "active" || bioBusyRef.current) {
+        return;
       }
-    })();
+      bioBusyRef.current = true;
+      setBioBusy(true);
+      try {
+        const ok = await authenticateWithBiometrics(
+          i18n.t("lock_screen.biometrics_prompt")
+        );
+        if (!cancelled && ok) {
+          haptic.notification(Haptic.NotificationFeedbackType.Success);
+          onCorrectEntryRef.current();
+        }
+      } finally {
+        bioBusyRef.current = false;
+        if (!cancelled) {
+          setBioBusy(false);
+        }
+      }
+    }
+
+    if (AppState.currentState === "active") {
+      tryUnlock();
+    }
+
+    const sub = AppState.addEventListener("change", (st) => {
+      if (st !== "active") {
+        cancelBiometricPrompt();
+        return;
+      }
+      tryUnlock();
+    });
+
     return () => {
       cancelled = true;
+      sub.remove();
+      cancelBiometricPrompt();
     };
   }, [isSettingCode]);
 
@@ -142,12 +173,25 @@ export default function LockScreen(props: Props) {
   }
 
   async function onBiometricsPress() {
-    const ok = await authenticateWithBiometrics(
-      i18n.t("lock_screen.biometrics_prompt")
-    );
-    if (ok) {
-      haptic.notification(Haptic.NotificationFeedbackType.Success);
-      onCorrectEntry();
+    if (bioBusyRef.current) {
+      await cancelBiometricPrompt();
+    }
+    if (AppState.currentState !== "active") {
+      return;
+    }
+    bioBusyRef.current = true;
+    setBioBusy(true);
+    try {
+      const ok = await authenticateWithBiometrics(
+        i18n.t("lock_screen.biometrics_prompt")
+      );
+      if (ok) {
+        haptic.notification(Haptic.NotificationFeedbackType.Success);
+        onCorrectEntry();
+      }
+    } finally {
+      bioBusyRef.current = false;
+      setBioBusy(false);
     }
   }
 
@@ -303,6 +347,7 @@ export default function LockScreen(props: Props) {
               fillColor="#EDF0FC"
               textColor={theme.darkBlue}
               width="100%"
+              opacity={bioBusy ? 0.6 : 1}
               onPress={onBiometricsPress}
             />
           </Row>
