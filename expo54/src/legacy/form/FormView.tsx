@@ -13,9 +13,10 @@ import Distortions from "./Distortions";
 import IntensityPicker from "./IntensityPicker";
 import { Slides, slidesForMode } from "./record-slides";
 import { sliderHeight, sliderWidth } from "./sizes";
+import { useAppTheme } from "../theme-context";
 import {
-  textInputPlaceholderColor,
-  textInputStyle,
+  textInputPlaceholderColorFor,
+  textInputStyleFor,
 } from "./textInputStyle";
 
 export {
@@ -57,6 +58,9 @@ interface FormViewProps {
 }
 
 export default function FormView(props: FormViewProps): React.JSX.Element {
+  const theme = useAppTheme();
+  const textInputStyle = textInputStyleFor(theme);
+  const textInputPlaceholderColor = textInputPlaceholderColorFor(theme);
   const slides = slidesForMode(props.mode);
   const defaultIndex = Math.max(0, slides.indexOf(props.slideToShow));
 
@@ -150,7 +154,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
               {i18n.t("cbt_form.evidence_for")}
             </SubHeader>
             <TextInput
-              style={{ ...textInputStyle, height: 110, backgroundColor: "white" }}
+              style={{ ...textInputStyle, height: 110 }}
               placeholderTextColor={textInputPlaceholderColor}
               placeholder={i18n.t("cbt_form.evidence_for_placeholder")}
               value={props.record.evidenceFor}
@@ -162,7 +166,7 @@ export default function FormView(props: FormViewProps): React.JSX.Element {
               {i18n.t("cbt_form.evidence_against")}
             </SubHeader>
             <TextInput
-              style={{ ...textInputStyle, height: 110, backgroundColor: "white" }}
+              style={{ ...textInputStyle, height: 110 }}
               placeholderTextColor={textInputPlaceholderColor}
               placeholder={i18n.t("cbt_form.evidence_against_placeholder")}
               value={props.record.challenge}
