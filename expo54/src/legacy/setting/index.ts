@@ -20,3 +20,12 @@ export {
   THOUGHT_RECORD_MODE_KEY,
   ThoughtRecordMode,
 } from "./thought-record-mode"
+export {
+  COLOR_SCHEME_DEFAULT,
+  COLOR_SCHEME_KEY,
+  ColorSchemeSetting,
+  getColorSchemeSetting,
+  isColorSchemeSetting,
+  resolveColorScheme,
+  setColorSchemeSetting,
+} from "./color-scheme"
