@@ -29,7 +29,7 @@ import {
   removeSetting,
   setSetting,
 } from "@/src/legacy/setting/settingstore";
-import theme from "@/src/legacy/theme";
+import { useAppTheme, useColorSchemeSetting } from "@/src/legacy/theme-context";
 import {
   ActionButton,
   Container,
@@ -177,6 +177,8 @@ export default function SettingScreen(): React.JSX.Element {
     getThoughtRecordMode,
     [refresh]
   );
+  const theme = useAppTheme();
+  const colorScheme = useColorSchemeSetting();
 
   const percentFormat = new Intl.NumberFormat(i18n.locale, {
     minimumFractionDigits: 2,
@@ -222,14 +224,14 @@ export default function SettingScreen(): React.JSX.Element {
   return (
     <ScrollView
       style={{
-        backgroundColor: theme.lightOffwhite,
+        backgroundColor: theme.background,
         marginTop: Constants.statusBarHeight,
         paddingTop: 24,
         height: "100%",
       }}
     >
       <Container style={{ paddingBottom: 128 }}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle={theme.statusBar} />
         <Row style={{ marginBottom: 18 }}>
           <Header>{i18n.t("settings.header")}</Header>
           <IconButton
@@ -279,7 +281,6 @@ export default function SettingScreen(): React.JSX.Element {
             )
           )}
 
-        {/* PIN Code & 生物辨識區塊 */}
         <Row
           style={{
             marginBottom: 18,
@@ -381,7 +382,6 @@ export default function SettingScreen(): React.JSX.Element {
           )}
         </Row>
 
-        {/* 紀錄模式選單區塊 */}
         {AsyncState.fold(
           thoughtRecordMode,
           () => null,
@@ -419,7 +419,31 @@ export default function SettingScreen(): React.JSX.Element {
           )
         )}
 
-        {/* 歷史按鈕標籤區塊 */}
+        <Row
+          style={{
+            marginBottom: 18,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <SubHeader>{i18n.t("settings.theme.header")}</SubHeader>
+          <RoundedSelectorButton
+            title={i18n.t("settings.theme.default")}
+            selected={colorScheme.setting === "system"}
+            onPress={() => colorScheme.setSetting("system")}
+          />
+          <RoundedSelectorButton
+            title={i18n.t("settings.theme.light")}
+            selected={colorScheme.setting === "light"}
+            onPress={() => colorScheme.setSetting("light")}
+          />
+          <RoundedSelectorButton
+            title={i18n.t("settings.theme.dark")}
+            selected={colorScheme.setting === "dark"}
+            onPress={() => colorScheme.setSetting("dark")}
+          />
+        </Row>
+
         {AsyncState.fold(
           historyButtonLabel,
           () => null,
@@ -451,7 +475,6 @@ export default function SettingScreen(): React.JSX.Element {
           )
         )}
 
-        {/* 備份與匯出 */}
         <SubHeader>{i18n.t("settings.backup.header")}</SubHeader>
         <Row style={{ marginBottom: 9 }}>
           <ActionButton
@@ -476,7 +499,6 @@ export default function SettingScreen(): React.JSX.Element {
           />
         </Row>
 
-        {/* 語系設定 */}
         {feature.localeSetting &&
           AsyncState.fold(
             localeSetting,
@@ -493,8 +515,8 @@ export default function SettingScreen(): React.JSX.Element {
               >
                 <SubHeader>{i18n.t("settings.locale.header")}</SubHeader>
                 <Picker
-                  itemStyle={{ color: "black" }}
-                  style={{ color: "black" }}
+                  itemStyle={{ color: theme.darkText }}
+                  style={{ color: theme.darkText }}
                   selectedValue={locale}
                   onValueChange={async (val) => {
                     await setLocaleSetting(val);
@@ -504,6 +526,7 @@ export default function SettingScreen(): React.JSX.Element {
                   <Picker.Item
                     label={i18n.t("settings.locale.default")}
                     value={""}
+                    color={theme.darkText}
                   />
                   {Object.entries(i18n.translations)
                     .map(([locale, translation]) => ({
@@ -527,6 +550,7 @@ export default function SettingScreen(): React.JSX.Element {
                             i18n.t("settings.locale.list." + locale) + suffix
                           }
                           value={locale}
+                          color={theme.darkText}
                         />
                       );
                     })}
@@ -535,7 +559,6 @@ export default function SettingScreen(): React.JSX.Element {
             )
           )}
 
-        {/* 頁尾連結 */}
         {feature.localeSetting && (
           <Row style={{ marginBottom: 9 }}>
             <ActionButton
