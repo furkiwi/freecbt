@@ -31,8 +31,8 @@ export default function Challenge(props: {
         <TextInput
           style={textInputStyleFor(theme)}
           placeholderTextColor={textInputPlaceholderColorFor(theme)}
-          value={value}
           placeholder={i18n.t("cbt_form.changed_placeholder")}
+          value={value}
           multiline={true}
           numberOfLines={6}
           onChangeText={onChange}

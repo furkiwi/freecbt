@@ -4,7 +4,7 @@ import i18n from "../i18n";
 import * as Bubbles from "../imgs/Bubbles";
 import * as Distortion from "../io-ts/distortion";
 import * as Style from "../style";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 import { SelectorTextItem, SubHeader } from "../ui";
 
 export default (props: {
@@ -71,10 +71,11 @@ function RoundedSelector(props: {
   style?: object;
 }) {
   const style = Style.useStyle();
+  const theme = useAppTheme();
   return (
     <View
       style={{
-        backgroundColor: theme.lightOffwhite,
+        backgroundColor: theme.background,
         ...props.style,
       }}
     >

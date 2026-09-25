@@ -4,7 +4,7 @@ import i18n from "@/src/legacy/i18n";
 import { Archive } from "@/src/legacy/io-ts/archive";
 import * as Thought from "@/src/legacy/io-ts/thought";
 import * as TS from "@/src/legacy/io-ts/thought/store";
-import theme from "@/src/legacy/theme";
+import { useAppTheme } from "@/src/legacy/theme-context";
 import {
   ActionButton,
   Container,
@@ -21,22 +21,23 @@ import React from "react";
 import { ScrollView, StatusBar, Text, TouchableOpacity } from "react-native";
 
 export default function ExportScreen(): React.JSX.Element {
+  const theme = useAppTheme();
   const router = useRouter();
   const thoughts = AsyncState.useAsyncState(TS.getValidExercises);
   const archive = AsyncState.useAsyncState(TS.readArchive);
 
   return (
-    // <FadesIn style={{ backgroundColor: theme.lightOffwhite }} pose="visible">
+    // <FadesIn style={{ backgroundColor: theme.background }} pose="visible">
     <ScrollView
       style={{
-        backgroundColor: theme.lightOffwhite,
+        backgroundColor: theme.background,
         marginTop: Constants.statusBarHeight,
         paddingTop: 24,
         height: "100%",
       }}
     >
       <Container style={{ paddingBottom: 128 }}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle={theme.statusBar} />
         <Row style={{ marginBottom: 18 }}>
           <Header>{i18n.t("export_screen.header")}</Header>
           <IconButton
@@ -132,6 +133,7 @@ function ExportButton(props: {
   ext: string;
   opts: Sharing.SharingOptions;
 }): React.JSX.Element {
+  const theme = useAppTheme();
   const isSharable = AsyncState.useAsyncState(Sharing.isAvailableAsync);
   const path: string = `${FS.documentDirectory}FreeCBT.${props.ext}`;
 

@@ -2,7 +2,7 @@ import { Routes } from "@/src";
 import * as AsyncState from "@/src/legacy/async-state";
 import i18n from "@/src/legacy/i18n";
 import * as TS from "@/src/legacy/io-ts/thought/store";
-import theme from "@/src/legacy/theme";
+import { useAppTheme } from "@/src/legacy/theme-context";
 import {
   ActionButton,
   Container,
@@ -21,21 +21,22 @@ import React from "react";
 import { ScrollView, StatusBar, Text } from "react-native";
 
 export default function BackupScreen(): React.JSX.Element {
+  const theme = useAppTheme();
   const router = useRouter();
   const archive = AsyncState.useAsyncState<string>(TS.readArchiveString);
 
   return (
-    // <FadesIn style={{ backgroundColor: theme.lightOffwhite }} pose="visible">
+    // <FadesIn style={{ backgroundColor: theme.background }} pose="visible">
     <ScrollView
       style={{
-        backgroundColor: theme.lightOffwhite,
+        backgroundColor: theme.background,
         marginTop: Constants.statusBarHeight,
         paddingTop: 24,
         height: "100%",
       }}
     >
       <Container style={{ paddingBottom: 128 }}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle={theme.statusBar} />
         <Row style={{ marginBottom: 18 }}>
           <Header>{i18n.t("backup_screen.header")}</Header>
           <IconButton
@@ -68,6 +69,7 @@ export default function BackupScreen(): React.JSX.Element {
 }
 
 function Export(props: { archive: string }): React.JSX.Element {
+  const theme = useAppTheme();
   const [isCopied, setIsCopied] = React.useState<string | null>(null);
   const isSharable = AsyncState.useAsyncState(Sharing.isAvailableAsync);
   const writePath: string = FS.documentDirectory + "FreeCBT-backup.txt";
@@ -100,7 +102,7 @@ function Export(props: { archive: string }): React.JSX.Element {
         <TextInput
           style={{
             ...textInputStyle,
-            backgroundColor: "white",
+            backgroundColor: theme.card,
           }}
           // \@ts-expect-error not sure why this isn't typed, but it makes this fill the width
           flex={1}
@@ -173,6 +175,7 @@ function Export(props: { archive: string }): React.JSX.Element {
 }
 
 function Import(props: { archive: string }): React.JSX.Element {
+  const theme = useAppTheme();
   const [archiveWrite, setArchiveWrite] = React.useState<
     AsyncState.RemoteData<null, T.Errors>
   >({
@@ -231,7 +234,7 @@ function Import(props: { archive: string }): React.JSX.Element {
         <TextInput
           style={{
             ...textInputStyle,
-            backgroundColor: "white",
+            backgroundColor: theme.card,
           }}
           // \@ts-expect-error not sure why this isn't typed, but it makes this fill the width
           flex={1}

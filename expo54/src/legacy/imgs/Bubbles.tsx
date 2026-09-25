@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, ViewStyle } from "react-native";
 import * as Style from "../style";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 import { Paragraph, ThoughtDook } from "../ui";
 
 const PurpleBubble = () => (
@@ -42,6 +42,7 @@ export const BubbleThought = ({
   color?: Color;
   style?: any;
 }) => {
+  const theme = useAppTheme();
   return (
     <View
       style={{

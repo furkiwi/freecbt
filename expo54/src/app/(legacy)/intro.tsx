@@ -9,7 +9,7 @@ import * as Feature from "@/src/legacy/feature";
 import haptic from "@/src/legacy/haptic";
 import i18n from "@/src/legacy/i18n";
 import { Screen, ScreenProps } from "@/src/legacy/screens";
-import theme from "@/src/legacy/theme";
+import { useAppTheme } from "@/src/legacy/theme-context";
 import {
   ActionButton,
   Container,
@@ -22,8 +22,10 @@ import { setNotifications } from "./settings";
 
 type Props = ScreenProps<Screen.ONBOARDING>;
 
-const RecordStep = () => (
-  <View
+const RecordStep = () => {
+  const theme = useAppTheme();
+  return (
+  <View>
     style={{
       height: "100%",
       justifyContent: "center",
@@ -67,7 +69,8 @@ const RecordStep = () => (
       }}
     />
   </View>
-);
+  );
+};
 
 const ChallengeStep = () => (
   <View
@@ -140,6 +143,7 @@ const ChangeStep = () => (
 );
 
 const RemindersStep = ({ onContinue }: { onContinue: () => void }) => {
+  const theme = useAppTheme();
   const { feature } = React.useContext(Feature.Context);
   return (
     <View

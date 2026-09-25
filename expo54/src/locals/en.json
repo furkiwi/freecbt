@@ -113,7 +113,7 @@
   "settings": {
     "header": "FreeCBT*",
     "theme": {
-      "header": "*theme",
+      "header": "Theme",
       "light": "Light",
       "dark": "Dark",
       "default": "System default"

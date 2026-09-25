@@ -113,7 +113,7 @@
   "settings": {
     "header": "FreeCBT*",
     "theme": {
-      "header": "*主題",
+      "header": "主題",
       "light": "淺色",
       "dark": "深色",
       "default": "跟隨系統"

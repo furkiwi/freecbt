@@ -5,7 +5,7 @@ import i18n from "../i18n";
 import { BubbleThought } from "../imgs/Bubbles";
 import * as Distortion from "../io-ts/distortion";
 import * as Thought from "../io-ts/thought";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 import {
   ActionButton,
   FormContainer,
@@ -127,7 +127,9 @@ const CBTView = ({
 }: {
   thought: Thought.Thought;
   onEdit: (uuid: string, slide: Slides) => void;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <>
     {Thought.hasFullRecordFields(thought) ? (
       <>
@@ -135,7 +137,7 @@ const CBTView = ({
           <SubHeader>{i18n.t("cbt_form.situation")}</SubHeader>
           <GhostButtonWithGuts
             borderColor={theme.lightGray}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: theme.card }}
             onPress={() => onEdit(Thought.key(thought), "situation")}
           >
             <Paragraph>{thought.situation || "🤷‍"}</Paragraph>
@@ -145,7 +147,7 @@ const CBTView = ({
           <SubHeader>{i18n.t("cbt_form.emotion")}</SubHeader>
           <GhostButtonWithGuts
             borderColor={theme.lightGray}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: theme.card }}
             onPress={() => onEdit(Thought.key(thought), "situation")}
           >
             <Paragraph>{thought.emotion || "🤷‍"}</Paragraph>
@@ -163,7 +165,7 @@ const CBTView = ({
       <GhostButtonWithGuts
         borderColor={theme.lightGray}
         style={{
-          backgroundColor: "white",
+          backgroundColor: theme.card,
         }}
         onPress={() => onEdit(Thought.key(thought), "automatic")}
       >
@@ -190,7 +192,7 @@ const CBTView = ({
       <GhostButtonWithGuts
         borderColor={theme.lightGray}
         style={{
-          backgroundColor: "white",
+          backgroundColor: theme.card,
         }}
         onPress={() => onEdit(Thought.key(thought), "distortions")}
       >
@@ -204,7 +206,7 @@ const CBTView = ({
           <SubHeader>{i18n.t("cbt_form.evidence_for")}</SubHeader>
           <GhostButtonWithGuts
             borderColor={theme.lightGray}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: theme.card }}
             onPress={() => onEdit(Thought.key(thought), "evidence")}
           >
             <Paragraph>{thought.evidenceFor || "🤷‍"}</Paragraph>
@@ -214,7 +216,7 @@ const CBTView = ({
           <SubHeader>{i18n.t("cbt_form.evidence_against")}</SubHeader>
           <GhostButtonWithGuts
             borderColor={theme.lightGray}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: theme.card }}
             onPress={() => onEdit(Thought.key(thought), "evidence")}
           >
             <Paragraph>{thought.challenge || "🤷‍"}</Paragraph>
@@ -227,7 +229,7 @@ const CBTView = ({
         <GhostButtonWithGuts
           borderColor={theme.lightGray}
           style={{
-            backgroundColor: "white",
+            backgroundColor: theme.card,
           }}
           onPress={() => onEdit(Thought.key(thought), "challenge")}
         >
@@ -241,7 +243,7 @@ const CBTView = ({
       <GhostButtonWithGuts
         borderColor={theme.lightGray}
         style={{
-          backgroundColor: "white",
+          backgroundColor: theme.card,
         }}
         onPress={() => onEdit(Thought.key(thought), "alternative")}
       >
@@ -268,7 +270,8 @@ const CBTView = ({
       </GhostButtonWithGuts>
     </FormContainer>
   </>
-);
+  );
+};
 
 export default ({
   thought,
@@ -279,6 +282,7 @@ export default ({
   onEdit: (uuid: string, slide: Slides) => void;
   onNew: () => void;
 }) => {
+  const theme = useAppTheme();
   if (!thought.uuid) {
     console.error("Viewing something that's not saved");
   }
@@ -316,7 +320,7 @@ export default ({
         <TextInput
           style={{
             ...textInputStyle,
-            backgroundColor: "white",
+            backgroundColor: theme.card,
           }}
           // @ts-expect-error not sure why this isn't typed, but it makes this fill the width
           flex={1}

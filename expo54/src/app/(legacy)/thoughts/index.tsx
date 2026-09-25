@@ -7,7 +7,7 @@ import universalHaptic from "@/src/legacy/haptic";
 import i18n from "@/src/legacy/i18n";
 import * as Thought from "@/src/legacy/io-ts/thought";
 import * as ThoughtStore from "@/src/legacy/io-ts/thought/store";
-import theme from "@/src/legacy/theme";
+import { useAppTheme } from "@/src/legacy/theme-context";
 import {
   Container,
   Header,
@@ -37,12 +37,13 @@ const ThoughtItem = (props: {
   onDelete: (thought: Thought.Thought) => void;
 }) => {
   const { thought, historyButtonLabel, onPress, onDelete } = props;
+  const theme = useAppTheme();
   return (
     <Row style={{ marginBottom: 18 }}>
       <TouchableOpacity
         onPress={() => onPress(thought)}
         style={{
-          backgroundColor: "white",
+          backgroundColor: theme.card,
           borderColor: theme.lightGray,
           borderBottomWidth: 2,
           borderRadius: 8,
@@ -165,12 +166,13 @@ const ParseErrorItem = (props: {
   onPress: (pe: ThoughtStore.ParseError) => void;
   onDelete: (pe: ThoughtStore.ParseError) => void;
 }) => {
+  const theme = useAppTheme();
   return (
     <Row style={{ marginBottom: 18 }}>
       <TouchableOpacity
         onPress={() => props.onPress(props.parseError)}
         style={{
-          backgroundColor: "white",
+          backgroundColor: theme.card,
           borderColor: theme.lightGray,
           borderBottomWidth: 2,
           borderRadius: 8,
@@ -232,6 +234,7 @@ const ParseErrorList = (props: {
 };
 
 export default function CBTListScreen(): React.JSX.Element {
+  const theme = useAppTheme();
   const router = useRouter();
   const [reload, setReload] = React.useState(0);
   const historyButtonLabel = AsyncState.useAsyncState(getHistoryButtonLabel);
@@ -253,17 +256,17 @@ export default function CBTListScreen(): React.JSX.Element {
     );
 
   return (
-    <View style={{ backgroundColor: theme.lightOffwhite }}>
+    <View style={{ backgroundColor: theme.background }}>
       <ScrollView
         style={{
-          backgroundColor: theme.lightOffwhite,
+          backgroundColor: theme.background,
           marginTop: Constants.statusBarHeight,
           paddingTop: 24,
           height: "100%",
         }}
       >
         <Container>
-          <StatusBar barStyle="dark-content" />
+          <StatusBar barStyle={theme.statusBar} />
           <Row style={{ marginBottom: 18 }}>
             <Header allowFontScaling={false}>
               {i18n.t("cbt_list.header")}

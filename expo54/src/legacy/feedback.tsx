@@ -3,7 +3,7 @@ import { Linking, Platform, Text, View } from "react-native";
 import * as AsyncState from "./async-state";
 import * as flagstore from "./flagstore";
 import { countThoughts } from "./io-ts/thought/store";
-import theme from "./theme";
+import { useAppTheme } from "./theme-context";
 import { ActionButton, Row, SubHeader } from "./ui";
 
 const PLAY_STORE_URL =
@@ -34,6 +34,7 @@ async function shouldShowRatingComponent(): Promise<boolean> {
 }
 
 export default function Feedback(): React.JSX.Element | null {
+  const theme = useAppTheme();
   const shouldShowRate = AsyncState.useAsyncState<boolean>(
     shouldShowRatingComponent
   );

@@ -14,7 +14,7 @@ import {
   isCorrectPincode,
   setPincode,
 } from "../lockstore";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 import {
   ActionButton,
   Container,
@@ -37,7 +37,9 @@ const KeypadButton = ({
   title: string;
   onPress: () => void;
   style?: { [s: string]: string };
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <GhostButton
     title={title}
     borderColor={theme.gray}
@@ -46,12 +48,13 @@ const KeypadButton = ({
     height={BUTTON_SIZE}
     fontSize={18}
     style={{
-      backgroundColor: "white",
+      backgroundColor: theme.card,
       ...style,
     }}
     onPress={onPress}
   />
-);
+  );
+};
 
 const KeypadSideButton = ({
   icon,
@@ -63,21 +66,26 @@ const KeypadSideButton = ({
   accessibilityLabel: string;
   onPress: () => void;
   style?: { [s: string]: string };
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <IconButton
     accessibilityLabel={accessibilityLabel}
     featherIconName={icon}
     style={{
-      backgroundColor: "white",
+      backgroundColor: theme.card,
       width: BUTTON_SIZE,
       ...style,
     }}
     onPress={onPress}
   />
-);
+  );
+};
 
-const Notifier = ({ isActive }: { isActive: boolean }) => (
-  <View
+const Notifier = ({ isActive }: { isActive: boolean }) => {
+  const theme = useAppTheme();
+  return (
+  <View>
     style={{
       width: 16,
       height: 16,
@@ -88,11 +96,13 @@ const Notifier = ({ isActive }: { isActive: boolean }) => (
       borderWidth: 2,
     }}
   />
-);
+  );
+};
 
 const BUTTON_SIZE = 96;
 
 export default function LockScreen(props: Props) {
+  const theme = useAppTheme();
   const router = useRouter();
   const { isSettingCode } = props;
   const onCorrectEntry =
@@ -240,7 +250,7 @@ export default function LockScreen(props: Props) {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={theme.statusBar} />
       <Container
         style={{
           flex: 1,
@@ -276,7 +286,7 @@ export default function LockScreen(props: Props) {
           paddingLeft: 12,
           paddingRight: 12,
           paddingTop: 24,
-          backgroundColor: "white",
+          backgroundColor: theme.card,
           borderTopWidth: 2,
           borderColor: theme.darkPink,
         }}

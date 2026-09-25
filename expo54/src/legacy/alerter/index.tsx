@@ -1,5 +1,5 @@
 import React from "react";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 import { IconButton, Paragraph, SubHeader } from "../ui";
 // import posed from "react-native-pose"
 import * as Haptic from "expo-haptics";
@@ -33,6 +33,7 @@ interface AlertViewProps {
 }
 
 function AlertView(props: AlertViewProps): React.JSX.Element {
+  const theme = useAppTheme();
   const [view, setView] = React.useState("hidden");
   React.useEffect(() => {
     setTimeout(() => {
@@ -56,7 +57,7 @@ function AlertView(props: AlertViewProps): React.JSX.Element {
           padding: 24,
           bottom: 24,
           borderRadius: 13,
-          backgroundColor: "white",
+          backgroundColor: theme.card,
           borderColor: theme.lightGray,
           borderWidth: 2,
           shadowColor: theme.lightGray,

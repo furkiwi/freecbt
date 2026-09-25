@@ -6,7 +6,7 @@ import haptic from "@/src/legacy/haptic";
 import i18n from "@/src/legacy/i18n";
 import * as Thought from "@/src/legacy/io-ts/thought";
 import * as ThoughtStore from "@/src/legacy/io-ts/thought/store";
-import theme from "@/src/legacy/theme";
+import { useAppTheme } from "@/src/legacy/theme-context";
 import {
   ActionButton,
   Container,
@@ -23,6 +23,7 @@ import { Linking, ScrollView, StatusBar, Text, View } from "react-native";
 function ParseErrorView(props: {
   error: ThoughtStore.ParseError;
 }): React.JSX.Element {
+  const theme = useAppTheme();
   const subject = "Parse Error";
   // cause: ${props.error.error.cause}
   const body = `uuid: ${props.error.id}
@@ -61,6 +62,7 @@ json: ${props.error.raw}`;
 }
 
 export default function CBTViewScreen(): React.JSX.Element {
+  const theme = useAppTheme();
   const router = useRouter();
   const { id: thoughtID } = useLocalSearchParams<{ id: string }>();
   const thought: AsyncState.RemoteData<
@@ -79,11 +81,11 @@ export default function CBTViewScreen(): React.JSX.Element {
   return (
     <View
       style={{
-        backgroundColor: theme.lightOffwhite,
+        backgroundColor: theme.background,
         height: "100%",
       }}
     >
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={theme.statusBar} />
       <Container
         style={{
           height: "100%",
