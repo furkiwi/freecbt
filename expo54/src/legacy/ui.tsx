@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import theme from "./theme";
+import { useAppTheme } from "./theme-context";
 
 export interface ParentComponent {
   children: any;
@@ -45,7 +45,9 @@ export const Header = ({
   children,
   style,
   allowFontScaling,
-}: ParentComponent & { allowFontScaling?: boolean }) => (
+}: ParentComponent & { allowFontScaling?: boolean }) => {
+  const theme = useAppTheme();
+  return (
   <Text
     style={{
       fontWeight: "900",
@@ -59,9 +61,12 @@ export const Header = ({
   >
     {children}
   </Text>
-);
+  );
+};
 
-export const SubHeader = ({ children, style }: ParentComponent) => (
+export const SubHeader = ({ children, style }: ParentComponent) => {
+  const theme = useAppTheme();
+  return (
   <Text
     style={{
       fontWeight: "700",
@@ -73,7 +78,8 @@ export const SubHeader = ({ children, style }: ParentComponent) => (
   >
     {children}
   </Text>
-);
+  );
+};
 
 export const SelectorTextItem = ({
   text,
@@ -87,11 +93,13 @@ export const SelectorTextItem = ({
   description: any;
   selected: boolean;
   onPress: () => void;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <TouchableOpacity
     onPress={onPress}
     style={{
-      backgroundColor: selected ? theme.blue : "white",
+      backgroundColor: selected ? theme.blue : theme.card,
       borderColor: selected ? theme.darkBlue : theme.lightGray,
       borderBottomWidth: 2,
       paddingTop: 8,
@@ -163,7 +171,8 @@ export const SelectorTextItem = ({
       </View>
     </View>
   </TouchableOpacity>
-);
+  );
+};
 
 export const RoundedSelectorButton = ({
   title,
@@ -173,11 +182,13 @@ export const RoundedSelectorButton = ({
   title: string;
   selected?: boolean;
   onPress: () => void;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <TouchableOpacity
     onPress={onPress}
     style={{
-      backgroundColor: selected ? theme.blue : "white",
+      backgroundColor: selected ? theme.blue : theme.card,
       borderColor: selected ? theme.darkBlue : theme.lightGray,
       borderBottomWidth: 2,
       paddingTop: 8,
@@ -206,7 +217,8 @@ export const RoundedSelectorButton = ({
 
     {selected && <Feather name={"check"} size={16} color={"white"} />}
   </TouchableOpacity>
-);
+  );
+};
 
 export const FloatingCard = ({
   children,
@@ -214,10 +226,12 @@ export const FloatingCard = ({
 }: {
   children: any;
   style?: any;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <View
     style={{
-      backgroundColor: "white",
+      backgroundColor: theme.card,
       borderWidth: 2,
       borderColor: theme.blue,
       borderRadius: 8,
@@ -233,7 +247,8 @@ export const FloatingCard = ({
   >
     {children}
   </View>
-);
+  );
+};
 
 export const GhostButtonWithGuts = ({
   onPress,
@@ -341,7 +356,9 @@ export const ActionButton = ({
   disabled?: boolean;
   flex?: number;
   opacity?: number;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <TouchableOpacity
     style={{
       backgroundColor: fillColor ?? theme.blue,
@@ -371,7 +388,8 @@ export const ActionButton = ({
       {title}
     </Text>
   </TouchableOpacity>
-);
+  );
+};
 
 export const IconButton = ({
   featherIconName,
@@ -385,7 +403,9 @@ export const IconButton = ({
   onPress: () => void;
   style?: object;
   hasBadge?: boolean;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <TouchableOpacity
     style={{
       backgroundColor: theme.lightGray,
@@ -416,9 +436,12 @@ export const IconButton = ({
     )}
     <Feather name={featherIconName} size={24} color={theme.veryLightText} />
   </TouchableOpacity>
-);
+  );
+};
 
-export const Paragraph = ({ children, style }: ParentComponent) => (
+export const Paragraph = ({ children, style }: ParentComponent) => {
+  const theme = useAppTheme();
+  return (
   <Text
     style={{
       color: theme.lightText,
@@ -429,7 +452,8 @@ export const Paragraph = ({ children, style }: ParentComponent) => (
   >
     {children}
   </Text>
-);
+  );
+};
 
 export const Container = ({ children, style }: ParentComponent) => (
   <View
@@ -452,7 +476,9 @@ export const Label = ({
 }: {
   children: any;
   [style: string]: any;
-}) => (
+}) => {
+  const theme = useAppTheme();
+  return (
   <Text
     style={{
       fontWeight: "700",
@@ -464,7 +490,8 @@ export const Label = ({
   >
     {children}
   </Text>
-);
+  );
+};
 
 export interface IllustrationComponent {
   style?: object;
