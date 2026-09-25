@@ -2,7 +2,8 @@ import React from "react"
 import { SubHeader } from "../ui"
 import { View, TextInput } from "react-native"
 import i18n from "../i18n"
-import { textInputStyle, textInputPlaceholderColor } from "./textInputStyle"
+import { useAppTheme } from "../theme-context"
+import { textInputPlaceholderColorFor, textInputStyleFor } from "./textInputStyle"
 
 export default ({
   value,
@@ -10,7 +11,9 @@ export default ({
 }: {
   value: string
   onChange: (v: string) => void
-}) => (
+}) => {
+  const theme = useAppTheme()
+  return (
   <>
     <View
       style={{
@@ -25,8 +28,8 @@ export default ({
         {i18n.t("auto_thought")}
       </SubHeader>
       <TextInput
-        style={textInputStyle}
-        placeholderTextColor={textInputPlaceholderColor}
+        style={textInputStyleFor(theme)}
+        placeholderTextColor={textInputPlaceholderColorFor(theme)}
         placeholder={i18n.t("cbt_form.auto_thought_placeholder")}
         value={value}
         multiline={true}
@@ -35,4 +38,5 @@ export default ({
       />
     </View>
   </>
-)
+  )
+}

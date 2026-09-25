@@ -2,8 +2,8 @@ import React from "react"
 import { SubHeader } from "../ui"
 import { View, TextInput } from "react-native"
 import i18n from "../i18n"
-import { textInputStyle, textInputPlaceholderColor } from "./textInputStyle"
-import theme from "../theme"
+import { useAppTheme } from "../theme-context"
+import { textInputPlaceholderColorFor, textInputStyleFor } from "./textInputStyle"
 
 const CHALLENGE = `George might be busy. I can't expect to have immediate access to his time.`
 
@@ -12,6 +12,7 @@ export default function Challenge(props: {
   onChange: (v: string) => void
 }) {
   const { value, onChange } = props
+  const theme = useAppTheme()
 
   return (
     <>
@@ -28,13 +29,10 @@ export default function Challenge(props: {
           {i18n.t("challenge")}
         </SubHeader>
         <TextInput
-          style={{
-            ...textInputStyle,
-            backgroundColor: "white",
-          }}
-          placeholderTextColor={textInputPlaceholderColor}
-          placeholder={i18n.t("cbt_form.changed_placeholder")}
+          style={textInputStyleFor(theme)}
+          placeholderTextColor={textInputPlaceholderColorFor(theme)}
           value={value}
+          placeholder={i18n.t("cbt_form.changed_placeholder")}
           multiline={true}
           numberOfLines={6}
           onChangeText={onChange}

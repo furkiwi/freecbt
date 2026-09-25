@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 
 const STEPS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
@@ -10,6 +10,7 @@ export default function IntensityPicker(props: {
   label: string;
 }): React.JSX.Element {
   const { value, onChange, label } = props;
+  const theme = useAppTheme();
   return (
     <View style={{ marginBottom: 12 }}>
       <Text
@@ -41,7 +42,7 @@ export default function IntensityPicker(props: {
                 borderRadius: 8,
                 borderWidth: 1,
                 borderColor: selected ? theme.blue : theme.lightGray,
-                backgroundColor: selected ? theme.blue : "white",
+                backgroundColor: selected ? theme.blue : theme.card,
               }}
             >
               <Text
