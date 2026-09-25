@@ -2,6 +2,7 @@ import { hasPincode } from "@/src/legacy/lockstore";
 import LockScreen from "@/src/legacy/screen/LockScreen";
 import * as Feature from "@/src/legacy/feature";
 import * as Style from "@/src/legacy/style";
+import { ThemeProvider, useAppTheme } from "@/src/legacy/theme-context";
 import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { AppState, View } from "react-native";
@@ -12,12 +13,23 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Feature.State>
         <Style.State>
-          <AuthState>
-            <Stack screenOptions={{ headerShown: false }} />
-          </AuthState>
+          <ThemeProvider>
+            <ThemedAuthState>
+              <Stack screenOptions={{ headerShown: false }} />
+            </ThemedAuthState>
+          </ThemeProvider>
         </Style.State>
       </Feature.State>
     </GestureHandlerRootView>
+  );
+}
+
+function ThemedAuthState(props: { children: React.ReactNode }): React.JSX.Element {
+  const theme = useAppTheme();
+  return (
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
+      <AuthState>{props.children}</AuthState>
+    </View>
   );
 }
 
