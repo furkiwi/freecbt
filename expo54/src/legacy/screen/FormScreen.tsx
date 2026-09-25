@@ -23,7 +23,7 @@ import {
   setThoughtRecordMode,
   ThoughtRecordMode,
 } from "../setting/thought-record-mode";
-import theme from "../theme";
+import { useAppTheme } from "../theme-context";
 import {
   clearDraft,
   distortionsFromSlugs,
@@ -54,6 +54,7 @@ const emptyRecord = (): Omit<FormRecord, "distortions"> => ({
 
 export default function FormScreen(props: Props = {}): React.JSX.Element {
   const router = useRouter();
+  const theme = useAppTheme();
   const { thoughtID, initDistortions, initSlide } = props;
   const initDistortionKey = (initDistortions ?? []).join(",");
   const fromIntro = props.fromIntro ?? false;
@@ -67,6 +68,7 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
     new Set<Distortion.Distortion>([])
   );
   const [draftHydrated, setDraftHydrated] = React.useState(false);
+  const persistDraftRef = React.useRef(true);
   const [slide, setSlide] = React.useState<Slides>(
     (initSlide as Slides) ?? "automatic"
   );
@@ -80,6 +82,7 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
 
   React.useEffect(() => {
     let cancelled = false;
+    persistDraftRef.current = true;
     setDraftHydrated(false);
     (async () => {
       const savedMode = await getThoughtRecordMode();
@@ -171,10 +174,13 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
   }, [initSlide]);
 
   React.useEffect(() => {
-    if (!draftHydrated) {
+    if (!draftHydrated || !persistDraftRef.current) {
       return;
     }
     const handle = setTimeout(() => {
+      if (!persistDraftRef.current) {
+        return;
+      }
       writeDraft({
         thoughtID: thoughtID ?? null,
         automaticThought: fields.automatic,
@@ -222,11 +228,14 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
     const thought: Thought.Thought = thought0_
       ? { ...thought0_, ...args, updatedAt: new Date() }
       : Thought.create(args);
+    persistDraftRef.current = false;
     await ThoughtStore.write(thought);
     await clearDraft();
+    setFields(emptyRecord());
+    setDistortions(new Set());
+    setSlide(defaultSlideForMode(mode));
     haptic.notification(Haptic.NotificationFeedbackType.Success);
     router.navigate(Routes.thoughtView(Thought.key(thought)));
-    setSlide("automatic");
   }
 
   function onChangeDistortion(selected: string) {
@@ -247,7 +256,7 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={theme.statusBar} />
       <Container
         style={{
           height: "100%",
@@ -256,6 +265,7 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
           marginTop: Constants.statusBarHeight,
           paddingTop: 12,
           paddingBottom: 0,
+          backgroundColor: theme.background,
         }}
       >
         <Row
