@@ -231,9 +231,14 @@ export default function FormScreen(props: Props = {}): React.JSX.Element {
     persistDraftRef.current = false;
     await ThoughtStore.write(thought);
     await clearDraft();
-    setFields(emptyRecord());
-    setDistortions(new Set());
-    setSlide(defaultSlideForMode(mode));
+    // Only wipe the composer when starting a new record. Editing an existing
+    // thought should keep the saved text if this screen stays mounted.
+    if (!thoughtID) {
+      setFields(emptyRecord());
+      setDistortions(new Set());
+      setSlide(defaultSlideForMode(mode));
+    }
+    persistDraftRef.current = true;
     haptic.notification(Haptic.NotificationFeedbackType.Success);
     router.navigate(Routes.thoughtView(Thought.key(thought)));
   }
