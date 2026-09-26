@@ -3,7 +3,6 @@ import * as Haptic from "expo-haptics";
 import React from "react";
 import { Alert, Dimensions, Image, Linking, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-// import { FadesIn } from "@/src/legacy/animations";
 import { Routes } from "@/src";
 import * as Feature from "@/src/legacy/feature";
 import haptic from "@/src/legacy/haptic";
@@ -25,7 +24,7 @@ type Props = ScreenProps<Screen.ONBOARDING>;
 const RecordStep = () => {
   const theme = useAppTheme();
   return (
-  <View>
+  <View
     style={{
       height: "100%",
       justifyContent: "center",
@@ -53,7 +52,7 @@ const RecordStep = () => {
       flex={1}
       width="100%"
       title={i18n.t("onboarding_screen.header")}
-      fillColor="#EDF0FC"
+      fillColor={theme.softFill}
       textColor={theme.darkBlue}
       onPress={() => {
         const url = "https://freecbt.erosson.org/explanation?ref=quirk";
@@ -194,7 +193,7 @@ const RemindersStep = ({ onContinue }: { onContinue: () => void }) => {
               flex={1}
               width="100%"
               title={i18n.t("onboarding_screen.reminders.button.no")}
-              fillColor="#EDF0FC"
+              fillColor={theme.softFill}
               textColor={theme.darkBlue}
               onPress={onContinue}
             />
@@ -206,7 +205,7 @@ const RemindersStep = ({ onContinue }: { onContinue: () => void }) => {
             flex={1}
             width="100%"
             title={i18n.t("onboarding_screen.reminders.button.continue")}
-            fillColor="#EDF0FC"
+            fillColor={theme.softFill}
             textColor={theme.darkBlue}
             onPress={onContinue}
           />
@@ -253,10 +252,7 @@ export default function OnboardingScreen(): React.JSX.Element {
         paddingBottom: 0,
       }}
     >
-      {/* <FadesIn pose="visible"> */}
       <Carousel
-        // width={sliderWidth}
-        // height={Dimensions.get('window').width / 2}
         width={width}
         height={height}
         data={["record", "challenge", "change", "reminders-or-continue"]}
@@ -270,7 +266,6 @@ export default function OnboardingScreen(): React.JSX.Element {
           parallaxScrollingOffset: Math.round(width * 0.15),
         }}
       />
-      {/* </FadesIn> */}
     </Container>
   );
 }

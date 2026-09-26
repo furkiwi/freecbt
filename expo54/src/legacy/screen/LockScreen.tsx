@@ -85,7 +85,7 @@ const KeypadSideButton = ({
 const Notifier = ({ isActive }: { isActive: boolean }) => {
   const theme = useAppTheme();
   return (
-  <View>
+  <View
     style={{
       width: 16,
       height: 16,
@@ -205,12 +205,10 @@ export default function LockScreen(props: Props) {
     }
   }
 
-  // run when a code is complete
   AsyncState.useAsyncEffect(async () => {
     if (!isComplete) {
       return;
     }
-    // settings: set a new code, then confirm it
     if (isSettingCode) {
       if (!isConfirming) {
         setPendingCode(code);
@@ -228,9 +226,7 @@ export default function LockScreen(props: Props) {
       await setPincode(code);
       haptic.notification(Haptic.NotificationFeedbackType.Success);
       router.navigate(Routes.thoughtCreate());
-    }
-    // try unlocking the screen
-    else {
+    } else {
       const isGood = await isCorrectPincode(code);
       if (isGood) {
         haptic.notification(Haptic.NotificationFeedbackType.Success);
@@ -354,7 +350,7 @@ export default function LockScreen(props: Props) {
           <Row style={{ marginTop: 24, justifyContent: "center" }}>
             <ActionButton
               title={i18n.t("lock_screen.biometrics_button")}
-              fillColor="#EDF0FC"
+              fillColor={theme.softFill}
               textColor={theme.darkBlue}
               width="100%"
               opacity={bioBusy ? 0.6 : 1}
