@@ -18,6 +18,7 @@ export type ThemeColors = {
   background: string;
   card: string;
   inputBackground: string;
+  softFill: string;
   statusBar: StatusBarStyle;
 };
 
@@ -39,6 +40,7 @@ export const lightTheme: ThemeColors = {
   background: "#fbfcfe",
   card: "#ffffff",
   inputBackground: "#ffffff",
+  softFill: "#EDF0FC",
   statusBar: "dark-content",
 };
 
@@ -60,6 +62,7 @@ export const darkTheme: ThemeColors = {
   background: "#12141a",
   card: "#1e2230",
   inputBackground: "#1e2230",
+  softFill: "#2a3040",
   statusBar: "light-content",
 };
 
